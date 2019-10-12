@@ -1,0 +1,32 @@
+.top{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+.actH{
+	border: 4px solid green;
+}
+.logo{
+	display:block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 25%
+}
+.bartH{
+	border: 4px solid #00a0cb;
+}
+ .row {
+  display: flex;
+}
+
+.column {
+  flex: 33.33%;
+  padding: 5px;
+}
+.bearH{
+	border: 4px solid 
+}
+div.map{
+	content:url(https://www.berkeleyside.com/wp-content/uploads/2013/07/BSDC-map.png);
+}

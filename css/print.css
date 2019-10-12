@@ -1,0 +1,8 @@
+@media print{
+	body{
+		font-size: 25pt;
+	}
+	img{
+		border: 5px solid black;
+	}
+}
