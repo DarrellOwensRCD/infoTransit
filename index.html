@@ -1,94 +1,115 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Create a hover effect</title>
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
-<style>
-body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
-</style>
-</head>
-<body>
-<div id="map"></div>
-<script>
-	mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [-100.486052, 37.830348],
-        zoom: 2
-    });
-    var hoveredStateId = null;
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Berkeley Demographics Analysis: Black</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 100px;
+        margin-top: 20px;
+        width: 250px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="map-overlay" id="features">
+      <h2>Berkeley Census 1970</h2>
+      <div id="pd"><p>Select a neighborhood to see population, demographics and housing in the year 1970</p></div>
+    </div>
+    <div class="map-overlay" id="legend"></div>
+    <script>
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
 
-    map.on('load', function () {
-        map.addSource('states', {
-            'type': 'geojson',
-            'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
-        });
+      //create map
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/ckp59j2a32cbs17rpdm8dypo8', // map style URL from Mapbox Studio
+      });
 
-        // The feature-state dependent fill-opacity expression will render the hover effect
-        // when a feature's hover state is set to true.
-        map.addLayer({
-            'id': 'state-fills',
-            'type': 'fill',
-            'source': 'states',
-            'layout': {},
-            'paint': {
-                'fill-color': '#FF0000',
-                'fill-opacity': [
-                    'case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    1,
-                    0.5
-                ]
-            }
-        });
+      // wait for map to load before adjusting it
+      map.on('load', function () {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
 
-        map.addLayer({
-            'id': 'state-borders',
-            'type': 'line',
-            'source': 'states',
-            'layout': {},
-            'paint': {
-                'line-color': '#627BC1',
-                'line-width': 2
-            }
-        });
+        // set map bounds to the continental US
 
-        // When the user moves their mouse over the state-fill layer, we'll update the
-        // feature state for the feature under the mouse.
-        map.on('mousemove', 'state-fills', function (e) {
-            if (e.features.length > 0) {
-                if (hoveredStateId !== null) {
-                    map.setFeatureState(
-                        { source: 'states', id: hoveredStateId },
-                        { hover: false }
-                    );
-                }
-                hoveredStateId = e.features[0].id;
-                map.setFeatureState(
-                    { source: 'states', id: hoveredStateId },
-                    { hover: true }
-                );
-            }
-        });
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
 
-        // When the mouse leaves the state-fill layer, update the feature state of the
-        // previously hovered feature.
-        map.on('mouseleave', 'state-fills', function () {
-            if (hoveredStateId !== null) {
-                map.setFeatureState(
-                    { source: 'states', id: hoveredStateId },
-                    { hover: false }
-                );
-            }
-            hoveredStateId = null;
+        // define layer names
+
+	// change info window on hover
+        map.on('mousemove', function (e) {
+          var tracts = map.queryRenderedFeatures(e.point, {
+            layers: ['berkeleycensus1970']
+          });
+
+          if (tracts.length > 0) {
+            document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              tracts[0]['properties']['neighborhood'] +
+              '</strong></h3>' +
+		'<p> Population: ' +
+              tracts[0]['properties']['Population'] +
+              '</p> <p> Black: ' +
+              tracts[0]['properties']['Black']+
+              '</p><p> White: ' +
+              tracts[0]['properties']['White']+
+              '</p><p>Other: ' +
+              tracts[0]['properties']['Other']+
+							'</p><p>Total Housing Units: ' +
+              tracts[0]['properties']['All Housing Units']+
+              '</p><p> Owner-Occupied Homes: ' +
+              tracts[0]['properties']['Owner-Occupied units']+
+              '</p><p>Renter-Occupied Homes: ' +
+              tracts[0]['properties']['Renter-Occupied units']+
+							'</p><p> Vacant Homes: ' +
+              tracts[0]['properties']['Renter-Occupied units'];
+          }
         });
-    });
+      });
 </script>
-
 </body>
 </html>
