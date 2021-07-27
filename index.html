@@ -1,115 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Berkeley Demographics Analysis: Black</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
-    <link
-      href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      h2,
-      h3 {
-        margin: 10px;
-        font-size: 1.2em;
-      }
-      h3 {
-        font-size: 1em;
-      }
-      p {
-        font-size: 0.85em;
-        margin: 10px;
-        text-align: left;
-      }
-      .map-overlay {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        background: rgba(255, 255, 255, 0.8);
-        margin-right: 20px;
-        font-family: Arial, sans-serif;
-        overflow: auto;
-        border-radius: 3px;
-      }
-      #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
-      }
-      #features {
-        top: 0;
-        height: 300px;
-        margin-top: 20px;
-        width: 250px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-    <div class="map-overlay" id="features">
-      <h2>Berkeley Census 1970</h2>
-      <div id="pd"><p>Select a neighborhood to see population, demographics and housing in the year 1970</p></div>
-    </div>
-    <div class="map-overlay" id="legend"></div>
-    <script>
-      // define access token
-      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+<html>
+<body>
 
-      //create map
-      var map = new mapboxgl.Map({
-        container: 'map', // container id
-        style: 'mapbox://styles/idothethinking/ckp59j2a32cbs17rpdm8dypo8', // map style URL from Mapbox Studio
-      });
+<h1>The script element</h1>
 
-      // wait for map to load before adjusting it
-      map.on('load', function () {
-        // make a pointer cursor
-        map.getCanvas().style.cursor = 'default';
+<p id="demo"></p>
 
-        // set map bounds to the continental US
+<script async src="//jsfiddle.net/idothethinking/nruxvbmd/13/embed/result/"></script>
 
-        // make a pointer cursor
-        map.getCanvas().style.cursor = 'default';
 
-        // define layer names
-
-	// change info window on hover
-        map.on('mousemove', function (e) {
-          var tracts = map.queryRenderedFeatures(e.point, {
-            layers: ['berkeleycensus1970']
-          });
-
-          if (tracts.length > 0) {
-            document.getElementById('pd').innerHTML =
-              '<h3><strong>' +
-              tracts[0]['properties']['neighborhood'] +
-              '</strong></h3>' +
-		'<p> Population: ' +
-              tracts[0]['properties']['Population'] +
-              '</p> <p> Black: ' +
-              tracts[0]['properties']['Black']+
-              '</p><p> White: ' +
-              tracts[0]['properties']['White']+
-              '</p><p>Other: ' +
-              tracts[0]['properties']['Other']+
-							'</p><p>Total Housing Units: ' +
-              tracts[0]['properties']['All Housing Units']+
-              '</p><p> Black Homeowner Households: ' +
-              tracts[0]['properties']['Black Homeowners']+
-              '</p><p>Black Renter Households: ' +
-              tracts[0]['properties']['Black Renters']+
-		'</p><p> Vacant Homes: ' +
-              tracts[0]['properties']['All Vacant Homes'];
-          }
-        });
-      });
-</script>
 </body>
 </html>
+
