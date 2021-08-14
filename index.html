@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title>Berkeley Demographics Analysis: Black</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
-    <link
-      href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
-      rel="stylesheet"
-    />
-<style>
-body {
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Black Census Berkeley Analysis</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <script type="text/javascript" src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+      <link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css">
+
+  <style id="compiled-css" type="text/css">
+      body {
   margin: 0;
   padding: 0;
 }
@@ -85,10 +98,30 @@ p {
   margin-right: 5px;
 }
 
-</style>
-</head>
+    /* EOS */
+  </style>
 
-<script>
+  <script id="insert"></script>
+
+
+</head>
+<body>
+    <div id="comparison-container">
+  <div id="before" class="map"></div>
+  <div id="after" class="map"></div>
+</div>
+<div class="map-overlay" id="features">
+  <h2>Black Population in Berkeley: 1970 vs 2020</h2>
+  <div id="pd">
+  <p>Pull arrows to the left and hover a mouse over a neighborhood to see its demographics in 1970 vs 2020.</p>
+  </div>
+</div>
+<div class="map-overlay" id="legend"></div>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
 var beforeMap = new mapboxgl.Map({
   container: 'before',
@@ -99,7 +132,7 @@ var beforeMap = new mapboxgl.Map({
 
 var afterMap = new mapboxgl.Map({
   container: 'after',
-  style: 'mapbox://styles/idothethinking/ckqxgyiac0qva18qunq7ohfim',
+  style: 'mapbox://styles/idothethinking/cksb2btcg17z517mwroc8ems4',
   center: [0, 0],
   zoom: 0
 });
@@ -173,42 +206,35 @@ const mousemove = function(map, layerName) {
         '</strong></h3>' +
         '<p> Population: ' +
         tracts[0]['properties']['Population'] +
-        '</p> <p> Black: ' +
+        '</p> <p> Black Population: ' +
         tracts[0]['properties']['Black'] +
-        '</p><p> White: ' +
-        tracts[0]['properties']['White'] +
-        '</p><p>Other: ' +
-        tracts[0]['properties']['Other'] +
-        '</p><p>Total Housing Units: ' +
-        tracts[0]['properties']['All Housing Units'] +
-        '</p><p> Black Homeowner Units: ' +
-        tracts[0]['properties']['Black Homeowners'] +
-        '</p><p>Black Renter Units: ' +
-        tracts[0]['properties']['Black Renters'] +
-        '</p><p> Vacant Homes: ' +
-        tracts[0]['properties']['All Vacant Homes'];
+        '</p><p> Percentage Black ' +
+        tracts[0]['properties']['Black Percentage'];
     }
   }
 }
 
 // change info window on hover
 beforeMap.on('mousemove', mousemove(beforeMap, 'berkeleycensus1970'));
-afterMap.on('mousemove', mousemove(afterMap, '2019berkeleyonlytracts'));	
+afterMap.on('mousemove', mousemove(afterMap, 'BlackPercent'));
 
-</script>
 
-<body>
-	<div id="comparison-container">
-  <div id="before" class="map"></div>
-  <div id="after" class="map"></div>
-</div>
-<div class="map-overlay" id="features">
-  <h2>Black Population in Berkeley: 1970 vs 2019</h2>
-  <div id="pd">
-    <p>Pull arrows to the left and hover a mouse over a neighborhood to see its demographics in 1970. Pull it to the right and hover over a neighborhood with your mouse to see demographics in 2019</p>
-  </div>
-</div>
-<div class="map-overlay" id="legend"></div>
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "nruxvbmd"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
 </body>
 </html>
-
