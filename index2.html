@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Berkeley Demographics Analysis: Black</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+		body {
+		  margin: 0;
+		  padding: 0;
+		}
+
+		body {
+		  overflow: hidden;
+		}
+
+		body * {
+		  -webkit-touch-callout: none;
+		  -webkit-user-select: none;
+		  -moz-user-select: none;
+		  -ms-user-select: none;
+		  user-select: none;
+		}
+
+		h2,
+		h3 {
+		  margin: 10px;
+		  font-size: 1.2em;
+		}
+
+		h3 {
+		  font-size: 1em;
+		}
+
+		p {
+		  font-size: 0.85em;
+		  margin: 10px;
+		  text-align: left;
+		}
+
+		.map-overlay {
+		  position: absolute;
+		  bottom: 0;
+		  right: 0;
+		  background: rgba(255, 255, 255, 0.8);
+		  margin-right: 20px;
+		  font-family: Arial, sans-serif;
+		  overflow: auto;
+		  border-radius: 3px;
+		}
+
+		.map {
+		  position: absolute;
+		  top: 0;
+		  bottom: 0;
+		  width: 100%;
+		}
+
+		#features {
+		  top: 0;
+		  height: 200px;
+		  margin-top: 20px;
+		  width: 250px;
+		}
+
+		#legend {
+		  padding: 10px;
+		  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+		  line-height: 18px;
+		  height: 110px;
+		  margin-bottom: 40px;
+		  width: 50px;
+		}
+
+		.legend-key {
+		  display: inline-block;
+		  border-radius: 20%;
+		  width: 10px;
+		  height: 10px;
+		  margin-right: 5px;
+		}
+	</style>
+  </head>
+	 <body>
+	<div id="comparison-container">
+	    <div id="before" class="map"></div>
+	    <div id="after" class="map"></div>
+	</div>
+	    <div class="map-overlay" id="features">
+	      <h2>Black Population in Berkeley: 1970 vs 2020</h2>
+	      <div id="pd"><p>Pull arrows to the left and hover a mouse over a neighborhood to see its demographics in 1970. Pull it to the right and hover over a neighborhood with your mouse to see demographics in 2020</p></div>
+	    </div>
+	    <div class="map-overlay" id="legend"></div>
+    <script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+		var beforeMap = new mapboxgl.Map({
+		  container: 'before',
+		  style: 'mapbox://styles/idothethinking/ckp59j2a32cbs17rpdm8dypo8',
+		  center: [0, 0],
+		  zoom: 0
+		});
+
+		var afterMap = new mapboxgl.Map({
+		  container: 'after',
+		  style: 'mapbox://styles/idothethinking/cksb2btcg17z517mwroc8ems4',
+		  center: [0, 0],
+		  zoom: 0
+		});
+
+		// A selector or reference to HTML element
+		var container = '#comparison-container';
+
+		var map = new mapboxgl.Compare(beforeMap, afterMap, container, {
+		  // Set this to enable comparing two maps by mouse movement:
+		  // mousemove: true
+
+		});
+		// wait for map to load before adjusting it
+		beforeMap.on('load', function() {
+		  // make a pointer cursor
+		  beforeMap.getCanvas().style.cursor = 'default';
+		})
+
+		afterMap.on('load', function() {
+		  // make a pointer cursor
+		  afterMap.getCanvas().style.cursor = 'default';
+
+		})
+
+		window.addEventListener('load', function() {
+		  var layers = [
+		    '0%',
+		    '10%',
+		    '30%',
+		    '50%',
+		    '70%',
+		    '90%',
+		  ];
+		  var colors = [
+		    '#eeeee4',
+		    '#ceedef',
+		    '#82dae9',
+		    '#47bbe3',
+		    '#477fd4',
+		    '#494fa2'
+		  ];
+
+		  // create legend
+		  for (i = 0; i < layers.length; i++) {
+		    var layer = layers[i];
+		    var color = colors[i];
+		    var item = document.createElement('div');
+		    var key = document.createElement('span');
+		    key.className = 'legend-key';
+		    key.style.backgroundColor = color;
+
+		    var value = document.createElement('span');
+		    value.innerHTML = layer;
+		    item.appendChild(key);
+		    item.appendChild(value);
+		    legend.appendChild(item);
+		  }
+
+		});
+		const mousemove = function(map, layerName) {
+		  return function(e) {
+		    console.log('mousemove', e)
+		    var tracts = map.queryRenderedFeatures(e.point, {
+		      layers: [layerName]
+		    });
+
+		    if (tracts.length > 0) {
+		      document.getElementById('pd').innerHTML =
+		        '<h3><strong>' +
+		        tracts[0]['properties']['neighborhood'] +
+		        '</strong></h3>' +
+		        '<p> Population: ' +
+		        tracts[0]['properties']['Population'] +
+		        '</p> <p> Black Population: ' +
+		        tracts[0]['properties']['Black'] +
+		        '</p><p> Percentage Black ' +
+		        tracts[0]['properties']['Black Percentage'];
+		    }
+		  }
+		}
+		// change info window on hover
+		beforeMap.on('mousemove', mousemove(beforeMap, 'berkeleycensus1970'));
+		afterMap.on('mousemove', mousemove(afterMap, 'BlackPercent'));
+</script>
+</body>
+</html>
