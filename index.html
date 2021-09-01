@@ -198,7 +198,7 @@ const mousemove = function(map, layerName) {
     var tracts = map.queryRenderedFeatures(e.point, {
       layers: [layerName]
     });
-  if (tracts.length > 0 and [layerName] == 'BlackPercent') {
+  if (tracts.length > 0 && [layerName] == 'BlackPercent') {
         '<h3><strong>' +
         tracts[0]['properties']['neighborhood'] +
         '</strong></h3>' +
