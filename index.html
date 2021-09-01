@@ -198,7 +198,17 @@ const mousemove = function(map, layerName) {
     var tracts = map.queryRenderedFeatures(e.point, {
       layers: [layerName]
     });
-
+  if (tracts.length > 0 and [layerName] == 'BlackPercent') {
+        '<h3><strong>' +
+        tracts[0]['properties']['neighborhood'] +
+        '</strong></h3>' +
+        '<p> Population: ' +
+        tracts[0]['properties']['Population20'] +
+        '</p> <p> Black Population: ' +
+        tracts[0]['properties']['Black20'] +
+        '</p><p> Percentage Black ' +
+        tracts[0]['properties']['Black20Per'];
+  }
     if (tracts.length > 0) {
       document.getElementById('pd').innerHTML =
         '<h3><strong>' +
