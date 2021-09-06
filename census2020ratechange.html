@@ -270,14 +270,15 @@
               tracts[0]['properties'][lookupracenetper[selectedLayer]];
           }
           if (tracts.length > 0) {
+            var decade10 = tracts[0]['properties'][lookuprace[selectedLayer]] - tracts[0]['properties'][lookupracenet[selectedLayer]]
             document.getElementById('pd').innerHTML =
               '<h3><strong>' +
               tracts[0]['properties']['NAMELSAD10'] +
               '</strong></h3>' +
-              '<p> 2020 Population: ' +
-              tracts[0]['properties']['Population20'] +
-              '</p> <p> '+ lookname[selectedLayer]+
+              '<p> '+ lookname[selectedLayer]+
               tracts[0]['properties'][lookuprace[selectedLayer]] +
+              '</p><p> '+ lookname10[selectedLayer]+
+              decade10+
               '</p><p> Net Difference since 2010: ' +
               tracts[0]['properties'][lookupracenet[selectedLayer]] +
               '</p><p>Percentage Increase/Decrease: ' +
