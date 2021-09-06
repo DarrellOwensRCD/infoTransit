@@ -190,8 +190,8 @@
           legend.appendChild(item);
         }
 
-	// Dict dec
-	let lookuprace = {"WhitePopulationGrowth" : "White20",
+				// Dict dec
+				let lookuprace = {"WhitePopulationGrowth" : "White20",
         "BlackPopulationGrowth" : "Black20",
         "LatinoPopulationGrowth" : "Latino20",
         "AsianPopulationGrowth" : "Asian20",
@@ -201,7 +201,6 @@
         "MultiracePopulationGrowth" : "Multi-Race20",
         "HousingGrowth" : "Homes20",
         "VacantHomesGrowth": "Vacant20"
-        "PopulationGrowth" : "Population20"
         }
        	let lookupracenet = {"WhitePopulationGrowth" : "WhiteNet",
         "BlackPopulationGrowth" : "BlackNet",
@@ -227,29 +226,18 @@
         "VacantHomesGrowth": "VacantNetPer",
         "PopulationGrowth": "PopulationNetPer",
         }
-        let lookname = {"WhitePopulationGrowth" : "White pop. (2020): ",
-        "BlackPopulationGrowth" : "Black pop. (2020): ",
-        "LatinoPopulationGrowth" : "Latino pop. (2020): ",
-        "AsianPopulationGrowth" : "Asian pop. (2020): ",
-        "OtherPopulationGrowth" : "Other pop. (2020): ",
-        "MultiracePopulationGrowth" : "Multi-Race pop. (2020): ",
-        "NativePopulationGrowth" : "Native American pop. (2020): ",
-        "PacificPopulationGrowth" : "Pacific Islander pop. (2020): ",
-        "HousingGrowth" : "Total Housing Units (2020): ",
-        "VacantHomesGrowth": "Vacant Housing Units (2020): ",
-        "PopulationGrowth" : "Total Population (2020): ",
-        }
-         let lookname10 = {"WhitePopulationGrowth" : "White pop. (2010): ",
-        "BlackPopulationGrowth" : "Black pop. (2010): ",
-        "LatinoPopulationGrowth" : "Latino pop. (2010): ",
-        "AsianPopulationGrowth" : "Asian pop. (2010): ",
-        "OtherPopulationGrowth" : "Other pop. (2010): ",
-        "MultiracePopulationGrowth" : "Multi-Race pop. (2010): ",
-        "NativePopulationGrowth" : "Native American pop. (2010): ",
-        "PacificPopulationGrowth" : "Pacific Islander pop. (2010): ",
-        "HousingGrowth" : "Total Housing Units (2010): ",
-        "VacantHomesGrowth": "Vacant Housing Units (2010): ",
-        "PopulationGrowth" : "Total Population (2010): "
+        let lookname = {"WhitePopulationGrowth" : "White ",
+        "BlackPopulationGrowth" : "Black population: ",
+        "LatinoPopulationGrowth" : "Latino population: ",
+        "AsianPopulationGrowth" : "Asian population: ",
+        "OtherPopulationGrowth" : "Other population: ",
+        "MultiracePopulationGrowth" : "Multi-Race population: ",
+        "NativePopulationGrowth" : "Native American population: ",
+        "PacificPopulationGrowth" : "Pacific Islander population: ",
+        "HousingGrowth" : "Total Housing Units: ",
+        "VacantHomesGrowth": "Vacant Housing Units: ",
+        
+        
         }
         // change info window on hover
         map.on('mousemove', function(e) {
@@ -257,16 +245,27 @@
             layers: [selectedLayer]
           });
           
+					if (tracts.length > 0 && [selectedLayer] == 'PopulationGrowth'){
+              document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              tracts[0]['properties']['NAMELSAD10'] +
+              '</strong></h3>' +
+              '<p> 2020 Population: ' +
+              tracts[0]['properties']['Population20'] +
+              '</p> <p> Net Difference since 2010: ' +
+              tracts[0]['properties'][lookupracenet[selectedLayer]] +
+              '</p><p>Percentage Increase/Decrease: ' +
+              tracts[0]['properties'][lookupracenetper[selectedLayer]];
+          }
           if (tracts.length > 0) {
-            var decade10 = tracts[0]['properties'][lookuprace[selectedLayer]] - tracts[0]['properties'][lookupracenet[selectedLayer]]
             document.getElementById('pd').innerHTML =
               '<h3><strong>' +
               tracts[0]['properties']['NAMELSAD10'] +
               '</strong></h3>' +
-              '<p> '+ lookname[selectedLayer]+
+              '<p> 2020 Population: ' +
+              tracts[0]['properties']['Population20'] +
+              '</p> <p> '+ lookname[selectedLayer]+
               tracts[0]['properties'][lookuprace[selectedLayer]] +
-              '</p><p> '+ lookname10[selectedLayer]+
-              decade10+
               '</p><p> Net Difference since 2010: ' +
               tracts[0]['properties'][lookupracenet[selectedLayer]] +
               '</p><p>Percentage Increase/Decrease: ' +
