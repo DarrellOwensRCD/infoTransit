@@ -95,7 +95,7 @@
 <div class="map-overlay" id="features">
   <div id="pd">
     <h2>Census 2020 Rate of Change</h2>
-    <p>Select a neighborhood to see population, demographics and housing growth or decline by tract over the decade</p>
+    <p>Select a neighborhood to see population, demographics and housing growth or decline by tract over the decade. Colors are coded by increase or decrease in selected group</p>
   </div>
   <h3>
   Topic:
@@ -158,19 +158,19 @@
 
         // define layer names
         var layers = [
-          '>100%',
-          '+50%',
-          '~0%',
-          '-50%',
-          '-100%',
+          '>1000',
+          '500',
+          '0%',
+          '-500',
+          '-1000>',
           'N/A',
         ];
         var colors = [
-          '#059e00',
-          '#09f901',
+          '#7e0101',
+          '#f50000',
           '#ffffff',
-          '#fe0606',
-          '#a70202',
+          '#00c71b',
+          '#01650c',
           '#000000'
         ];
 
