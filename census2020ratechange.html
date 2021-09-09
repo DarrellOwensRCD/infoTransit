@@ -129,6 +129,8 @@
       var map = new mapboxgl.Map({
         container: 'map', // container id
         style: 'mapbox://styles/idothethinking/ckshtdrsj7si217mw9ua1e42v', // map style URL from Mapbox Studio
+	center:[-122.264,37.812], //center over Oakland
+        zoom: 11.86
       });
 	var nav = new mapboxgl.NavigationControl();
 	map.addControl(nav, 'top-left')
