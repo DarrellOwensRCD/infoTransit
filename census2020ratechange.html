@@ -125,6 +125,7 @@
 
       let selectedLayer = 'PacificPopulationGrowth'
 
+
       //create map
       var map = new mapboxgl.Map({
         container: 'map', // container id
@@ -133,8 +134,7 @@
         zoom: 11.86
       });
 	var nav = new mapboxgl.NavigationControl();
-	map.addControl(nav, 'top-left')
-
+	map.addControl(nav, 'top-left'); 
       // map layers -- we iterate through these to turn them all off
       let mapLayers = ['WhitePopulationGrowth', 'LatinoPopulationGrowth', 'BlackPopulationGrowth', 'AsianPopulationGrowth', 'OtherPopulationGrowth', 'MultiracePopulationGrowth',"NativePopulationGrowth","PacificPopulationGrowth", 'HousingGrowth', 'VacantHomesGrowth',"PopulationGrowth",]
       // layer listener
@@ -147,7 +147,6 @@
         map.setLayoutProperty(event.target.value, "visibility", "visible")
       });
 
-
       // wait for map to load before adjusting it
       map.on('load', function() {
         // make a pointer cursor
@@ -157,7 +156,21 @@
 
         // make a pointer cursor
         map.getCanvas().style.cursor = 'default';
-       
+
+        // Add layer to display highlighted tract
+        const highlightLayer = 'highlight-layer';
+        map.addLayer({
+          id: highlightLayer,
+          type: 'fill',
+          source: "composite",
+          "source-layer": "2020to2010CensusTracts-1ac5kz",
+          paint: {
+            'fill-color': 'hotpink',
+            'fill-opacity': 0.75,
+          },
+          filter: ['==','TRACTCE10',''],
+        });
+
         // define layer names
         var layers = [
           '>1000',
@@ -285,6 +298,7 @@
               tracts[0]['properties'][lookupracenet[selectedLayer]] +
               '</p><p>Percentage Increase/Decrease: ' +
               tracts[0]['properties'][lookupracenetper[selectedLayer]];
+            map.setFilter(highlightLayer, ['==', 'TRACTCE10', tracts[0].properties.TRACTCE10]);
           }
         });
       });
