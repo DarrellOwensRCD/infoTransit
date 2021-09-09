@@ -130,7 +130,8 @@
         container: 'map', // container id
         style: 'mapbox://styles/idothethinking/ckshtdrsj7si217mw9ua1e42v', // map style URL from Mapbox Studio
       });
-
+	var nav = new mapboxgl.NavigationControl();
+	map.addControl(nav, 'top-left')
 
       // map layers -- we iterate through these to turn them all off
       let mapLayers = ['WhitePopulationGrowth', 'LatinoPopulationGrowth', 'BlackPopulationGrowth', 'AsianPopulationGrowth', 'OtherPopulationGrowth', 'MultiracePopulationGrowth',"NativePopulationGrowth","PacificPopulationGrowth", 'HousingGrowth', 'VacantHomesGrowth',"PopulationGrowth",]
