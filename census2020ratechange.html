@@ -158,20 +158,6 @@
         // make a pointer cursor
         map.getCanvas().style.cursor = 'default';
        
-	// Add layer to display highlighted tract
-        const highlightLayer = 'highlight-layer';
-        map.addLayer({
-          id: highlightLayer,
-          type: 'fill',
-          source: "composite",
-          "source-layer": "2020to2010CensusTracts-1ac5kz",
-          paint: {
-            'fill-color': 'hotpink',
-            'fill-opacity': 0.75,
-          },
-          filter: ['==','TRACTCE10',''],
-        });
-
         // define layer names
         var layers = [
           '>1000',
