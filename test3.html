@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Census 2020 Rate of Change Map</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+  <style id="compiled-css" type="text/css">
+      
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #layerlist {
+        top: 0;
+        left: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #legend {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      height: 110px;
+      margin-bottom: 40px;
+      width: 70px;
+      }
+      .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+      }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+    <div id="map"></div>
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>Census 2020 Rate of Change</h2>
+    <p>Select a neighborhood to see population, demographics and housing growth or decline by tract over the decade.</p>
+  </div>
+  <h3>
+  Topic:
+  </h3>
+  <select id='layerpicker'>
+  <option> select</option>
+    <option value="PopulationGrowth">Total Population (2020)</option>
+    <option value="LatinoPopulationGrowth">Latino</option>
+    <option value="WhitePopulationGrowth">White</option>
+    <option value="BlackPopulationGrowth">Black</option>
+    <option value="AsianPopulationGrowth">Asian</option>
+    <option value="MultiracePopulationGrowth">Multi-Racial</option>
+    <option value="OtherPopulationGrowth">Other Race</option>
+    <option value="NativePopulationGrowth">Native American</option>
+    <option value="PacificPopulationGrowth">Pacific Islander</option>
+    <option value="HousingGrowth">Housing Units</option>
+    <option value="VacantHomesGrowth">Vacant Units</option>
+  </select>
+</div>
+<div class="map-overlay" id="legend"></div>
+
+    <script type="text/javascript">//<![CDATA[
+
+
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+
+      let selectedLayer = 'PacificPopulationGrowth'
+
+      //create map
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/ckshtdrsj7si217mw9ua1e42v', // map style URL from Mapbox Studio
+      });
+
+
+      // map layers -- we iterate through these to turn them all off
+      let mapLayers = ['WhitePopulationGrowth', 'LatinoPopulationGrowth', 'BlackPopulationGrowth', 'AsianPopulationGrowth', 'OtherPopulationGrowth', 'MultiracePopulationGrowth',"NativePopulationGrowth","PacificPopulationGrowth", 'HousingGrowth', 'VacantHomesGrowth',"PopulationGrowth",]
+      // layer listener
+      const selectElement = document.querySelector('#layerpicker');
+
+      selectElement.addEventListener('change', (event) => {
+        console.log(event.target.value)
+        selectedLayer = event.target.value
+        mapLayers.forEach(l => map.setLayoutProperty(l, "visibility", "none"))
+        map.setLayoutProperty(event.target.value, "visibility", "visible")
+      });
+
+      // wait for map to load before adjusting it
+      map.on('load', function() {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+        // set map bounds to the continental US
+
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+        // Add layer to display highlighted tract
+        const highlightLayer = 'highlight-layer';
+        map.addLayer({
+          id: highlightLayer,
+          type: 'fill',
+          source: "composite",
+          "source-layer": "2020to2010CensusTracts-1ac5kz",
+          paint: {
+            'fill-color': 'hotpink',
+            'fill-opacity': 0.75,
+          },
+          filter: ['==','TRACTCE10',''],
+        });
+
+        // define layer names
+        var layers = [
+          '>1000',
+          '500',
+          '0',
+          '-500',
+          '-1000>',
+          'N/A',
+        ];
+        var colors = [
+          '#01650c',
+          '#00c71b',
+          '#ffffff',
+          '#f50000',
+          '#7e0101',
+          '#000000'
+        ];
+
+        // create legend
+        for (i = 0; i < layers.length; i++) {
+          var layer = layers[i];
+          var color = colors[i];
+          var item = document.createElement('div');
+          var key = document.createElement('span');
+          key.className = 'legend-key';
+          key.style.backgroundColor = color;
+
+          var value = document.createElement('span');
+          value.innerHTML = layer;
+          item.appendChild(key);
+          item.appendChild(value);
+          legend.appendChild(item);
+        }
+
+				// Dict dec
+				let lookuprace = {"WhitePopulationGrowth" : "White20",
+        "BlackPopulationGrowth" : "Black20",
+        "LatinoPopulationGrowth" : "Latino20",
+        "AsianPopulationGrowth" : "Asian20",
+        "OtherPopulationGrowth" : "Other20",
+        "NativePopulationGrowth" : "Native American20",
+        "PacificPopulationGrowth" : "Pacific Islander20",
+        "MultiracePopulationGrowth" : "Multi-Race20",
+        "HousingGrowth" : "Homes20",
+        "VacantHomesGrowth": "Vacant20",
+        "PopulationGrowth" : "Population20"
+        }
+       	let lookupracenet = {"WhitePopulationGrowth" : "WhiteNet",
+        "BlackPopulationGrowth" : "BlackNet",
+        "LatinoPopulationGrowth" : "LatinoNet",
+        "AsianPopulationGrowth" : "AsianNet",
+        "OtherPopulationGrowth" : "OtherNet",
+        "MultiracePopulationGrowth" : "Multi-RaceNet",
+        "NativePopulationGrowth" : "Native AmericanNet",
+        "PacificPopulationGrowth" : "Pacific IslanderNet",
+        "HousingGrowth" : "HomesNet",
+        "VacantHomesGrowth": "VacantNet",
+        "PopulationGrowth" : "PopulationNet",
+        }
+        let lookupracenetper = {"WhitePopulationGrowth" : "WhiteNetPer",
+        "BlackPopulationGrowth" : "BlackNetPer",
+        "LatinoPopulationGrowth" : "LatinoNetPer",
+        "AsianPopulationGrowth" : "AsianNetPer",
+        "OtherPopulationGrowth" : "OtherNetPer",
+        "MultiracePopulationGrowth" : "Multi-RaceNetPer",
+        "NativePopulationGrowth" : "Native AmericanNetPer",
+        "PacificPopulationGrowth" : "Pacific IslanderNetPer",
+        "HousingGrowth" : "HomesNetPer",
+        "VacantHomesGrowth": "VacantNetPer",
+        "PopulationGrowth": "PopulationNetPer",
+        }
+        let lookname = {"WhitePopulationGrowth" : "White pop. (2020): ",
+        "BlackPopulationGrowth" : "Black pop. (2020): ",
+        "LatinoPopulationGrowth" : "Latino pop. (2020): ",
+        "AsianPopulationGrowth" : "Asian pop. (2020): ",
+        "OtherPopulationGrowth" : "Other pop. (2020): ",
+        "MultiracePopulationGrowth" : "Multi-Race pop. (2020): ",
+        "NativePopulationGrowth" : "Native American pop. (2020): ",
+        "PacificPopulationGrowth" : "Pacific Islander pop. (2020): ",
+        "HousingGrowth" : "Total Housing Units (2020): ",
+        "VacantHomesGrowth": "Vacant Housing Units (2020): ",
+        "PopulationGrowth" : "Total Population (2020): ",
+        }
+         let lookname10 = {"WhitePopulationGrowth" : "White pop. (2010): ",
+        "BlackPopulationGrowth" : "Black pop. (2010): ",
+        "LatinoPopulationGrowth" : "Latino pop. (2010): ",
+        "AsianPopulationGrowth" : "Asian pop. (2010): ",
+        "OtherPopulationGrowth" : "Other pop. (2010): ",
+        "MultiracePopulationGrowth" : "Multi-Race pop. (2010): ",
+        "NativePopulationGrowth" : "Native American pop. (2010): ",
+        "PacificPopulationGrowth" : "Pacific Islander pop. (2010): ",
+        "HousingGrowth" : "Total Housing Units (2010): ",
+        "VacantHomesGrowth": "Vacant Housing Units (2010): ",
+        "PopulationGrowth" : "Total Population (2010): "
+        }
+        // change info window on hover
+        map.on('mousemove', function(e) {
+          var tracts = map.queryRenderedFeatures(e.point, {
+            layers: [selectedLayer]
+          });
+          
+					if (tracts.length > 0 && [selectedLayer] == 'PopulationGrowth'){
+              document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              tracts[0]['properties']['NAMELSAD10'] +
+              '</strong></h3>' +
+              '<p> 2020 Population: ' +
+              tracts[0]['properties']['Population20'] +
+              '</p> <p> Net Difference since 2010: ' +
+              tracts[0]['properties'][lookupracenet[selectedLayer]] +
+              '</p><p>Percentage Increase/Decrease: ' +
+              tracts[0]['properties'][lookupracenetper[selectedLayer]];
+          }
+          if (tracts.length > 0) {
+            var decade10 = tracts[0]['properties'][lookuprace[selectedLayer]] - tracts[0]['properties'][lookupracenet[selectedLayer]]
+            document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              tracts[0]['properties']['NAMELSAD10'] +
+              '</strong></h3>' +
+              '<p> '+ lookname[selectedLayer]+
+              tracts[0]['properties'][lookuprace[selectedLayer]] +
+              '</p><p> '+ lookname10[selectedLayer]+
+              decade10+
+              '</p><p> Net Difference since 2010: ' +
+              tracts[0]['properties'][lookupracenet[selectedLayer]] +
+              '</p><p>Percentage Increase/Decrease: ' +
+              tracts[0]['properties'][lookupracenetper[selectedLayer]];
+            map.setFilter(highlightLayer, ['==', 'TRACTCE10', tracts[0].properties.TRACTCE10]);
+          }
+        });
+      });
+
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "1cxdy0qr"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
