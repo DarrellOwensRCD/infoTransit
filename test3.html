@@ -134,8 +134,7 @@
         zoom: 11.86
       });
 	var nav = new mapboxgl.NavigationControl();
-	map.addControl(nav, 'top-left')
-	    
+	map.addControl(nav, 'top-left'); 
       // map layers -- we iterate through these to turn them all off
       let mapLayers = ['WhitePopulationGrowth', 'LatinoPopulationGrowth', 'BlackPopulationGrowth', 'AsianPopulationGrowth', 'OtherPopulationGrowth', 'MultiracePopulationGrowth',"NativePopulationGrowth","PacificPopulationGrowth", 'HousingGrowth', 'VacantHomesGrowth',"PopulationGrowth",]
       // layer listener
