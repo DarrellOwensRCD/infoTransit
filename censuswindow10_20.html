@@ -227,6 +227,13 @@ const mousemove = function(map, layerName) {
     });
 
     if (tracts.length > 0) {
+      var tract = 0
+    	if(tracts[0]['properties']['Year'] == '2010'){
+      	tract = tracts[0]['properties']['NAME10']
+      }
+      else{
+      	tract = tracts[0]['properties']['NAME']
+      }
       var occupied = tracts[0]['properties']['Homes'] - tracts[0]['properties']['Vacant']
       var peroccu = 100 * (occupied / tracts[0]['properties']['Homes'])
       peroccu = Math.round(peroccu * 10) / 10
@@ -234,7 +241,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> <strong>Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </strong></p>' +
@@ -267,7 +274,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </p>' +
@@ -300,7 +307,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </p>' +
@@ -333,7 +340,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </p>' +
@@ -367,7 +374,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </p>' +
@@ -400,7 +407,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </p>' +
@@ -434,7 +441,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </p>' +
@@ -467,7 +474,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </p>' +
@@ -500,7 +507,7 @@ const mousemove = function(map, layerName) {
         document.getElementById('pd').innerHTML =
           '<h3><strong>Census ' +
           tracts[0]['properties']['Year'] +
-          '</strong></h3>' +
+          '</strong> (Tract: ' + tract + ')</h3>' +
           '<p> Total Population: ' +
           tracts[0]['properties']['Population'] +
           ' (100%) </p>' +
