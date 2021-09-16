@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Census 2020 vs 2010</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <script type="text/javascript" src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+      <link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css">
+
+  <style id="compiled-css" type="text/css">
+      body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow: hidden;
+}
+
+body * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+h2,
+h3 {
+  margin: 10px;
+  font-size: 1.2em;
+}
+
+h3 {
+  font-size: 1em;
+}
+
+p {
+  font-size: 0.85em;
+  margin: 10px;
+  text-align: left;
+}
+
+.map-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  margin-right: 20px;
+  font-family: Arial, sans-serif;
+  overflow: auto;
+  border-radius: 3px;
+}
+
+.map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+#features {
+  top: 0;
+  height: 200px;
+  margin-top: 20px;
+  width: 250px;
+}
+
+#legend {
+  padding: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 18px;
+  height: 90px;
+  margin-bottom: 40px;
+  width: 60px;
+}
+
+.legend-key {
+  display: inline-block;
+  border-radius: 20%;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+}
+ 
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+    <div id="comparison-container">
+  <div id="before" class="map"></div>
+  <div id="after" class="map"></div>
+</div>
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>Census: 2010 and 2020</h2>
+  <p>Each Census Tract contains Population, Race and Housing data. Hover your mouse on the left side of the screen to see Census 2010 data and the right side of the screen to see Census 2020 data.</p>
+  </div>
+    <h3>
+  Topic:
+  </h3>
+  <select id='layerpicker'>
+    <option value ="Select" > Select </option>
+    <option value="Population">Population And Tracts</option>
+    <option value="Homes">Housing </option>
+    <option value="Asian">Asian</option>
+    <option value="Black">Black</option>
+    <option value="Latino">Latino</option>
+    <option value="White">White</option>
+    <option value="Native">Native American</option>
+    <option value="Pacific">Pacific Islander</option>
+    <option value="Other">Other Race</option>
+    <option value="Multi-Race">Multi-Racial</option>
+  </select>
+</div>
+<div class="map-overlay" id="legend"></div>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+var beforeMap = new mapboxgl.Map({
+  container: 'before',
+  style: 'mapbox://styles/idothethinking/cktgglupf48l118ulgyehg6pg',
+  center: [-122.256, 37.806],
+  zoom: 8.74
+});
+
+var afterMap = new mapboxgl.Map({
+  container: 'after',
+  style: 'mapbox://styles/idothethinking/cktghrcew49qo17pfhvcmsfzt',
+  center: [-122.256, 37.806],
+  zoom: 8.74
+});
+//Controls 
+var nav = new mapboxgl.NavigationControl();
+beforeMap.addControl(nav, 'top-left');
+// A selector or reference to HTML element
+var container = '#comparison-container';
+let selectedLayer = "Select"
+const selectElement = document.querySelector('#layerpicker');
+let mapLayers = ["Homes", "Population", "Asian", "Black", "Latino", "White", "Native", "Pacific", "Other", "Multi-Race"]
+selectElement.addEventListener('change', (event) => {
+  console.log(event.target.value)
+  selectedLayer = event.target.value
+  mapLayers.forEach(l => beforeMap.setLayoutProperty(l, "visibility", "none"))
+  mapLayers.forEach(l => afterMap.setLayoutProperty(l, "visibility", "none"))
+  beforeMap.setLayoutProperty(event.target.value, "visibility", "visible")
+  afterMap.setLayoutProperty(event.target.value, "visibility", "visible")
+});
+
+var map = new mapboxgl.Compare(beforeMap, afterMap, container, {
+  // Set this to enable comparing two maps by mouse movement:
+  // mousemove: true
+
+});
+// wait for map to load before adjusting it
+beforeMap.on('load', function() {
+  // make a pointer cursor
+  beforeMap.getCanvas().style.cursor = 'default';
+})
+
+afterMap.on('load', function() {
+  // make a pointer cursor
+  afterMap.getCanvas().style.cursor = 'default';
+
+})
+
+window.addEventListener('load', function() {
+  var layers = [
+    '0%',
+    '25%',
+    '50%',
+    '75%',
+    '100%',
+  ];
+  var colors = [
+    '#eeeee4',
+    '#8ff78f',
+    '#07ed07',
+    '#059e03',
+    '#006600',
+  ];
+
+  // create legend
+  for (i = 0; i < layers.length; i++) {
+    var layer = layers[i];
+    var color = colors[i];
+    var item = document.createElement('div');
+    var key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
+
+    var value = document.createElement('span');
+    value.innerHTML = layer;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+  }
+
+});
+const mousemove = function(map, layerName) {
+  return function(e) {
+    console.log('mousemove', e)
+    var tracts = map.queryRenderedFeatures(e.point, {
+      layers: [selectedLayer]
+    });
+
+    if (tracts.length > 0) {
+      var occupied = tracts[0]['properties']['Homes'] - tracts[0]['properties']['Vacant']
+      var peroccu = 100 * (occupied / tracts[0]['properties']['Homes'])
+      peroccu = Math.round(peroccu * 10) / 10
+      if ([selectedLayer] == 'Population') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> <strong>Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </strong></p>' +
+          '<p>Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)  </p>' +
+          '<p> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </p>' +
+          '<p> Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%) </p>' +
+          '<p> Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%) </p>' +
+          '<p> Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </p>' +
+          '<p> Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </p>' +
+          '<p> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%) </p>' +
+          '<p> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'Asian') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </p>' +
+          '<p><strong> Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)</strong></p>' +
+          '<p> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </p>' +
+          '<p> Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%) </p>' +
+          '<p> Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%) </p>' +
+          '<p> Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </p>' +
+          '<p> Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </p>' +
+          '<p> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%) </p>' +
+          '<p> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'Black') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </p>' +
+          '<p><strong> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </strong></p>' +
+          '<p>Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)</p>' +
+          '<p> Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%) </p>' +
+          '<p> Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%) </p>' +
+          '<p> Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </p>' +
+          '<p> Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </p>' +
+          '<p> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%) </p>' +
+          '<p> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'Latino') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </p>' +
+          '<p> <strong>Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%) </strong></p>' +
+          '<p>Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)</p>' +
+          '<p> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </p>' +
+
+          '<p> Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%) </p>' +
+          '<p> Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </p>' +
+          '<p> Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </p>' +
+          '<p> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%) </p>' +
+          '<p> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'Multi-Race') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </p>' +
+          '<p> <strong>Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%)</strong> </p>' +
+          '<p> Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)</p>' +
+          '<p> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </p>' +
+          '<p> Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%)  </p>' +
+          '<p> Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </p>' +
+          '<p> Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </p>' +
+          '<p> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%) </p>' +
+          '<p> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'Native') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </p>' +
+          '<p> <strong>Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </strong></p>' +
+          '<p> Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)</p>' +
+          '<p> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </p>' +
+          '<p> Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%) </p>' +
+          '<p> Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%) </p>' +
+
+          '<p> Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </p>' +
+          '<p> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%) </p>' +
+          '<p> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'Other') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </p>' +
+          '<p> <strong>Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </strong></p>' +
+          '<p> Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)</p>' +
+          '<p> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </p>' +
+          '<p> Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%) </p>' +
+          '<p> Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%) </p>' +
+          '<p> Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </p>' +
+          '<p> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%) </p>' +
+          '<p> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'Pacific') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </p>' +
+          '<p><strong> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%)</strong> </p>' +
+          '<p> Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)</p>' +
+          '<p> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </p>' +
+          '<p> Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%) </p>' +
+          '<p> Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%) </p>' +
+          '<p> Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </p>' +
+          '<p> Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </p>' +
+          '<p> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'White') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>' +
+          '<p> Total Population: ' +
+          tracts[0]['properties']['Population'] +
+          ' (100%) </p>' +
+          '<p><strong> White: ' +
+          tracts[0]['properties']['White'] +
+          ' (' + tracts[0]['properties']['WhitePer'] + '%)</strong> </p>' +
+          '<p> Asian: ' +
+          tracts[0]['properties']['Asian'] +
+          ' (' + tracts[0]['properties']['AsianPer'] + '%)</p>' +
+          '<p> Black: ' +
+          tracts[0]['properties']['Black'] +
+          ' (' + tracts[0]['properties']['BlackPer'] + '%) </p>' +
+          '<p> Latino: ' +
+          tracts[0]['properties']['Latino'] +
+          ' (' + tracts[0]['properties']['LatinoPer'] + '%) </p>' +
+          '<p> Multi-Race: ' +
+          tracts[0]['properties']['Multi-Race'] +
+          ' (' + tracts[0]['properties']['Multi-RacePer'] + '%) </p>' +
+          '<p> Native American: ' +
+          tracts[0]['properties']['Native American'] +
+          ' (' + tracts[0]['properties']['Native AmericanPer'] + '%) </p>' +
+          '<p> Other: ' +
+          tracts[0]['properties']['Other'] +
+          ' (' + tracts[0]['properties']['OtherPer'] + '%) </p>' +
+          '<p> Pacific Islander: ' +
+          tracts[0]['properties']['Pacific Islander'] +
+          ' (' + tracts[0]['properties']['Pacific IslanderPer'] + '%) </p>'
+      }
+      if ([selectedLayer] == 'Housing') {
+        document.getElementById('pd').innerHTML =
+          '<h3><strong>Census ' +
+          tracts[0]['properties']['Year'] +
+          '</strong></h3>'
+        '<p> Homes: ' +
+        tracts[0]['properties']['Homes'] +
+          ' (100%) </p>' +
+          '<p> Occupied: ' + occupied +
+          ' (' + peroccu + '%)</p>' +
+          '<p> Vacant: ' + tracts[0]['properties']['Vacant'] +
+          ' (' + tracts[0]['properties']['VacantPer'] + '%)</p>'
+      }
+    }
+  }
+}
+
+// change info window on hover
+beforeMap.on('mousemove', mousemove(beforeMap, [selectedLayer]));
+afterMap.on('mousemove', mousemove(afterMap, [selectedLayer]));
+
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "x3p8u1ya"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
+
