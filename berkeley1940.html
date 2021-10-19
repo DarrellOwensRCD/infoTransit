@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Census 2020 Rate of Change Map</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+  <style id="compiled-css" type="text/css">
+      
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 240px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #layerlist {
+        top: 0;
+        left: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #legend {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      height: 110px;
+      margin-bottom: 40px;
+      width: 70px;
+      }
+      .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+      }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+    <div id="map"></div>
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>Map of Census 1940</h2>
+    <p>Select a neighborhood to see population and demographics in the year 1940. Select a racial group with the "Census 1940 Races" menu below.</p>
+  </div>
+  <h3>
+  Census 1940 Races:
+  </h3>
+  <select id='layerpicker'>
+  <option> select</option>
+  <option value = "BlackPop"> Black</option>
+    <option value="WhitePop">White</option>
+    <option value="OtherPop">Other Race</option>
+  </select>
+</div>
+<div class="map-overlay" id="legend"></div>
+
+    <script type="text/javascript">//<![CDATA[
+
+
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+
+      let selectedLayer = 'BlackPop'
+
+      //create map
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/ckr7g68hx3ca418mmomhhe9oy', // map style URL from Mapbox Studio
+	center:[-122.269,37.873],
+	zoom: 12
+      });
+	var nav = new mapboxgl.NavigationControl();
+	map.addControl(nav, 'top-left')
+	let hoveredStateId = null;
+      // map layers -- we iterate through these to turn them all off
+	let mapLayers = ['WhitePop', 'BlackPop','OtherPop']
+      // layer listener
+      const selectElement = document.querySelector('#layerpicker');
+
+      selectElement.addEventListener('change', (event) => {
+        console.log(event.target.value)
+        selectedLayer = event.target.value
+        mapLayers.forEach(l => map.setLayoutProperty(l, "visibility", "none"))
+        map.setLayoutProperty(event.target.value, "visibility", "visible")
+      });
+	
+
+      // wait for map to load before adjusting it
+      map.on('load', function() {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+        // set map bounds to the continental US
+
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+
+        // define layer names
+        var layers = [
+          '0%',
+          '10%',
+          '30%',
+          '50%',
+          '70%',
+          '90%',
+        ];
+        var colors = [
+          '#eeeee4',
+          '#ceedef',
+          '#82dae9',
+          '#47bbe3',
+          '#477fd4',
+          '#494fa2'
+        ];
+
+        // create legend
+        for (i = 0; i < layers.length; i++) {
+          var layer = layers[i];
+          var color = colors[i];
+          var item = document.createElement('div');
+          var key = document.createElement('span');
+          key.className = 'legend-key';
+          key.style.backgroundColor = color;
+
+          var value = document.createElement('span');
+          value.innerHTML = layer;
+          item.appendChild(key);
+          item.appendChild(value);
+          legend.appendChild(item);
+        }
+	
+	let race = {
+	"BlackPop" : "Black Population",
+	"OtherPop" : "Other Population",
+	"WhitePop" : "White Population"
+	}
+        let racename = {
+        "BlackPop" : "Black",
+        "OtherPop" : "Other",
+        "WhitePop" : "White"
+        }
+        let raceper = {
+        "BlackPop" : "Black Percentage",
+        "OtherPop" : "Other Race Percentage",
+        "WhitePop" : "White Percentage",
+        }
+        let racehome = {
+        "BlackPop" : "Black Homeowners",
+        "OtherPop" : "Other Race Homeowners",
+        "WhitePop" : "White Homeowners",
+        }
+        let racerent = {
+        "BlackPop" : "Black Renters",
+        "OtherPop" : "Other Race Renters",
+        "WhitePop" : "White Renters",
+        }
+        // change info window on hover
+        map.on('mousemove', function(e) {
+          var tracts = map.queryRenderedFeatures(e.point, {
+            layers: [selectedLayer]
+          });
+          
+          if (tracts.length > 0) {
+	     var homeowner = 0
+	     var renter = 0
+            if([selectedLayer] == 'OtherPop'){
+                homeowner = parseInt(tracts[0]['properties']['Owner-Occupied units']) - (parseInt(tracts[0]['properties']['Black Homeowners']) + parseInt(tracts[0]['properties']['White Homeowners'])  )
+                renter = parseInt(tracts[0]['properties']['Renter-Occupied units']) - (parseInt(tracts[0]['properties']['Black Renters']) + parseInt(tracts[0]['properties']['White Renters']) )
+             }
+            else{
+                homeowner = parseInt(tracts[0]['properties'][racehome[selectedLayer]])
+                renter = parseInt(tracts[0]['properties'][racerent[selectedLayer]])
+	    }
+            document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              tracts[0]['properties']['neighborhood'] +
+              '</strong></h3>' +
+              '<p> Total Population: '+
+              tracts[0]['properties']['Population'] +
+              '</p><p>'+ race[selectedLayer] +
+              ': ' + tracts[0]['properties'][racename[selectedLayer]] +
+	      '</p><p>Percentage ' + racename[selectedLayer] + ': ' +
+              tracts[0]['properties'][raceper[selectedLayer]] +
+              '%</p><p>' + racename[selectedLayer] + ' Owned Homes: ' +
+              homeowner +
+	      '</p><p>' + racename[selectedLayer] + ' Rented Homes: ' +
+	      renter;
+          }
+        });
+      });
+
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "1cxdy0qr"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
