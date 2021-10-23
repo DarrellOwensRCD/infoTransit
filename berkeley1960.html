@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>History of Gentrification: Census 1960 Map</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+  <style id="compiled-css" type="text/css">
+      
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 310px;
+        margin-top: 20px;
+        width: 240px;
+      }
+      #layerlist {
+        top: 0;
+        left: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #legend {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      height: 110px;
+      margin-bottom: 40px;
+      width: 70px;
+      }
+      .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+      }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+    <div id="map"></div>
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>Census 1960</h2>
+    <p>Select a neighborhood to see population and demographics in the year 1960 and how its changed from 1950.</p>
+  </div>
+  <h3>
+  Census Data:
+  </h3>
+  <select id='layerpicker'>
+  <option> select</option>
+    <option value ="NetBlack">Black</option>
+    <option value="NetWhite">White</option>
+    <option value="NetOther">Other Race</option>
+    <option value="NetUnits">Housing Growth</option>
+    <option value="NetPop">Population Growth</option>  
+</select>
+</div>
+<div class="map-overlay" id="legend">
+</div>
+
+    <script type="text/javascript">//<![CDATA[
+
+
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+
+      let selectedLayer = 'BlackPop'
+
+      //create map
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/ckv2jp2hd1yiv14mxr1060e8j', // map style URL from Mapbox Studio
+      	center:[-122.269,37.873],
+      	zoom: 12
+            });
+	var nav = new mapboxgl.NavigationControl();
+	map.addControl(nav, 'top-left')
+	let hoveredStateId = null;
+      // map layers -- we iterate through these to turn them all off
+	let mapLayers = ['NetPop','NetWhite', 'NetBlack','NetOther', 'NetUnits']
+      // layer listener
+      const selectElement = document.querySelector('#layerpicker');
+
+      selectElement.addEventListener('change', (event) => {
+        console.log(event.target.value)
+        selectedLayer = event.target.value
+        mapLayers.forEach(l => map.setLayoutProperty(l, "visibility", "none"))
+        map.setLayoutProperty(event.target.value, "visibility", "visible")
+      });
+	
+
+      // wait for map to load before adjusting it
+      map.on('load', function() {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+        // set map bounds to the continental US
+
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+
+        // define layer names
+        // define layer names
+        var layers = [
+          '1000',
+          '500',
+          '250',
+          '0',
+          '<0',
+          'N/A'
+        ];
+        var colors = [
+          '#008000',
+          '#14fd08',
+          '#fef60b',
+          '#ffffff',
+          '#fd1717',
+          '#000000'
+        ];
+        var layers_p = [
+          '2000',
+          '1000',
+          '500',
+          '0',
+          '-500',
+          '-1000',
+        ];
+        var colors_p = [
+          '#005704',
+          '#00ff0d',
+          '#8fff94',
+          '#ffffff',
+          '#ff9e9e',
+          '#e80202'
+        ];
+        var layers_r = [
+          '100%',
+          '72%',
+          '0%',
+          '-100%',
+                '',
+                '',
+        ];
+        var colors_r = [
+          '#fe9595',
+          '#ffffff',
+          '#00f020',
+          '#017e05',
+		'',
+		'',
+        ];
+        // create legend
+	for (i = 0; i < layers.length; i++) {
+          var layer = layers[i];
+          var color = colors[i];
+          var item = document.createElement('div');
+          var key = document.createElement('span');
+          key.className = 'legend-key';
+          key.style.backgroundColor = color;
+
+          var value = document.createElement('span');
+          value.innerHTML = layer;
+          item.appendChild(key);
+          item.appendChild(value);
+          legend.appendChild(item);
+        }
+	let netrace = {
+        "NetBlack" : "BlackNet",
+        "NetOther" : "OtherNet",
+        "NetWhite" : "WhiteNet",
+	}
+	let race = {
+	"NetBlack" : "Black Population",
+	"NetOther" : "Other Population",
+	"NetWhite" : "White Population",
+	}
+        let racename = {
+        "NetBlack" : "Black",
+        "NetOther" : "Other",
+        "NetWhite" : "White",
+        }
+        let raceper = {
+        "NetBlack" : "Black Percentage",
+        "NetOther" : "Other Race Percentage",
+        "NetWhite" : "White Percentage",
+        }
+        // change info window on hover
+        map.on('mousemove', function(e) {
+          var tracts = map.queryRenderedFeatures(e.point, {
+            layers: [selectedLayer]
+          });
+          
+          if (tracts.length > 0) {
+	    if([selectedLayer] == 'NetUnits'){
+		for (i = 0; i < layers.length; i++) {
+		  legend.removeChild(legend.lastElementChild);
+		}
+		for (i = 0; i < layers.length; i++) {
+		  var layer = layers[i];
+		  var color = colors[i];
+		  var item = document.createElement('div');
+		  var key = document.createElement('span');
+		  key.className = 'legend-key';
+		  key.style.backgroundColor = color;
+
+		  var value = document.createElement('span');
+		  value.innerHTML = layer;
+		  item.appendChild(key);
+		  item.appendChild(value);
+		  legend.appendChild(item);
+		}
+		let own = (parseInt(tracts[0]['properties']['Owner-Occupied units']) / parseInt(tracts[0]['properties']['Occupied Units']) * 100).toFixed(1);
+		let rent = (parseInt(tracts[0]['properties']['Renter-Occupied units']) / parseInt(tracts[0]['properties']['Occupied Units']) * 100).toFixed(1);
+		document.getElementById('pd').innerHTML =
+                      '<h3><strong>' +
+                      tracts[0]['properties']['neighborhood'] +
+                      '</strong></h3>' +
+                      '<p> Total Homes: '+
+                      tracts[0]['properties']['All Housing Units'] +
+                      '</p><p>Vacant Homes: ' + tracts[0]['properties']['All Vacant Homes'] +
+                      '</p><p>Homes Added Since 1950: ' + tracts[0]['properties']['NetUnits'] +
+                      '</p><p>Homes Owned: ' + own + 
+		      '%</p><p>Homes Rented: ' + rent + '%';
+
+	    }
+	    else{
+                for (i = 0; i < layers.length; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+                for (i = 0; i < layers.length; i++) {
+                  var layer = layers_p[i];
+                  var color = colors_p[i];
+                  var item = document.createElement('div');
+                  var key = document.createElement('span');
+                  key.className = 'legend-key';
+                  key.style.backgroundColor = color;
+
+                  var value = document.createElement('span');
+                  value.innerHTML = layer;
+                  item.appendChild(key);
+                  item.appendChild(value);
+                  legend.appendChild(item);
+                }
+                if([selectedLayer] == 'NetPop'){
+                  document.getElementById('pd').innerHTML =
+                    '<h3><strong>' +
+                    tracts[0]['properties']['neighborhood'] +
+                    '</strong></h3>' +
+                    '<p> Total Population: '+
+                    tracts[0]['properties']['Population'] +
+                    '</p><p>Percentage : 100%' +
+                   '</p><p>Change in Population since 1950: ' +
+                     tracts[0]['properties']['PopNet'];
+                }
+                else{
+          		    document.getElementById('pd').innerHTML =
+          		      '<h3><strong>' +
+          		      tracts[0]['properties']['neighborhood'] +
+          		      '</strong></h3>' +
+          		      '<p> Total Population: '+
+          		      tracts[0]['properties']['Population'] +
+          		      '</p><p>'+ race[selectedLayer] +
+          		      ': ' + tracts[0]['properties'][racename[selectedLayer]] +
+          		      '</p><p>Percentage ' + racename[selectedLayer] + ': ' +
+          		      tracts[0]['properties'][raceper[selectedLayer]] +
+          		      '%</p><p>Change in ' + race[selectedLayer] + ' since 1950: ' +
+          		       tracts[0]['properties'][netrace[selectedLayer]];
+         }
+		}
+          }
+        });
+      });
+
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "1cxdy0qr"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
