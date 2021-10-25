@@ -102,11 +102,14 @@
   </h3>
   <select id='layerpicker'>
   <option> select</option>
-    <option value ="NetBlack">Black</option>
-    <option value="NetWhite">White</option>
-    <option value="NetOther">Other Race</option>
-    <option value="NetUnits">Housing Growth</option>
-    <option value="NetPop">Population Growth</option>  
+    <option value ="BlackPer">Black Percentage</option>
+    <option value="WhitePer">White Percentage</option>
+    <option value="OtherPer">Other Race Percentage</option>
+    <option value ="NetBlack">Black Change</option>
+    <option value="NetWhite">White Change</option>
+    <option value="NetOther">Other Race Change</option>
+    <option value="NetUnits">Housing Change</option>
+    <option value="NetPop">Population Change</option>  
 </select>
 </div>
 <div class="map-overlay" id="legend">
@@ -131,7 +134,7 @@
 	map.addControl(nav, 'top-left')
 	let hoveredStateId = null;
       // map layers -- we iterate through these to turn them all off
-	let mapLayers = ['NetPop','NetWhite', 'NetBlack','NetOther', 'NetUnits']
+	let mapLayers = ['NetPop','NetWhite', 'NetBlack','NetOther', 'NetUnits', 'BlackPer', 'WhitePer', 'OtherPer']
       // layer listener
       const selectElement = document.querySelector('#layerpicker');
 
@@ -204,6 +207,22 @@
 		'',
 		'',
         ];
+	var layers_per = [
+          '0%',
+          '10%',
+          '30%',
+          '50%',
+          '70%',
+          '90%',
+        ];
+        var colors_per = [
+          '#eeeee4',
+          '#ceedef',
+          '#82dae9',
+          '#47bbe3',
+          '#477fd4',
+          '#494fa2'
+        ];
         // create legend
 	for (i = 0; i < layers.length; i++) {
           var layer = layers[i];
@@ -228,16 +247,25 @@
 	"NetBlack" : "Black Population",
 	"NetOther" : "Other Population",
 	"NetWhite" : "White Population",
+	"BlackPer" : "Black Population",
+        "OtherPer" : "Other Race Population",
+        "WhitePer" : "White Population",
 	}
         let racename = {
         "NetBlack" : "Black",
         "NetOther" : "Other",
         "NetWhite" : "White",
+	"BlackPer" : "Black",
+        "OtherPer" : "Other",
+        "WhitePer" : "White",
         }
         let raceper = {
         "NetBlack" : "Black Percentage",
         "NetOther" : "Other Race Percentage",
         "NetWhite" : "White Percentage",
+	"BlackPer" : "Black Percentage",
+        "OtherPer" : "Other Race Percentage",
+        "WhitePer" : "White Percentage",
         }
         // change info window on hover
         map.on('mousemove', function(e) {
@@ -278,6 +306,36 @@
 		      '%</p><p>Homes Rented: ' + rent + '%';
 
 	    }
+    	   else if ([selectedLayer] == 'BlackPer' || [selectedLayer] == 'WhitePer' || [selectedLayer] == 'OtherPer'){
+                for (i = 0; i < layers.length; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+                for (i = 0; i < layers.length; i++) {
+                  var layer = layers_per[i];
+                  var color = colors_per[i];
+                  var item = document.createElement('div');
+                  var key = document.createElement('span');
+                  key.className = 'legend-key';
+                  key.style.backgroundColor = color;
+
+                  var value = document.createElement('span');
+                  value.innerHTML = layer;
+                  item.appendChild(key);
+                  item.appendChild(value);
+                  legend.appendChild(item);
+                }
+              document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              tracts[0]['properties']['neighborhood'] +
+              '</strong></h3>' +
+              '<p> Total Population: '+
+              tracts[0]['properties']['Population'] +
+              '</p><p>'+ race[selectedLayer] +
+              ': ' + tracts[0]['properties'][racename[selectedLayer]] +
+              '</p><p>Percentage ' + racename[selectedLayer] + ': ' +
+              tracts[0]['properties'][raceper[selectedLayer]] + 
+              '%</p>';
+            }
 	    else{
                 for (i = 0; i < layers.length; i++) {
                   legend.removeChild(legend.lastElementChild);
