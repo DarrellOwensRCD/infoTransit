@@ -275,16 +275,16 @@
           
           if (tracts.length > 0) {
 	    if([selectedLayer] == 'NetUnits'){
-		for (i = 0; i < layers.length; i++) {
-		  legend.removeChild(legend.lastElementChild);
-		}
-		for (i = 0; i < layers.length; i++) {
-		  var layer = layers[i];
-		  var color = colors[i];
-		  var item = document.createElement('div');
-		  var key = document.createElement('span');
-		  key.className = 'legend-key';
-		  key.style.backgroundColor = color;
+                for (i = 0; i < layers.length; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+                for (i = 0; i < layers.length; i++) {
+                  var layer = layers_p[i];
+                  var color = colors_p[i];
+                  var item = document.createElement('div');
+                  var key = document.createElement('span');
+                  key.className = 'legend-key';
+                  key.style.backgroundColor = color;
 
 		  var value = document.createElement('span');
 		  value.innerHTML = layer;
