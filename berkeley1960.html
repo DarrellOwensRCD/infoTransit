@@ -294,17 +294,30 @@
 		}
 		let own = (parseInt(tracts[0]['properties']['Owner-Occupied units']) / parseInt(tracts[0]['properties']['Occupied Units']) * 100).toFixed(1);
 		let rent = (parseInt(tracts[0]['properties']['Renter-Occupied units']) / parseInt(tracts[0]['properties']['Occupied Units']) * 100).toFixed(1);
-		document.getElementById('pd').innerHTML =
-                      '<h3><strong>' +
-                      tracts[0]['properties']['neighborhood'] +
-                      '</strong></h3>' +
-                      '<p> Total Homes: '+
-                      tracts[0]['properties']['All Housing Units'] +
-                      '</p><p>Vacant Homes: ' + tracts[0]['properties']['All Vacant Homes'] +
-                      '</p><p>Homes Added Since 1950: ' + tracts[0]['properties']['NetUnits'] +
-                      '</p><p>Homes Owned: ' + own + 
-		      '%</p><p>Homes Rented: ' + rent + '%';
-
+		if(tracts[0]['properties']['GISJOIN'] == 'G0600010BE0005BB'){
+			      document.getElementById('pd').innerHTML =
+			      '<h3><strong>' +
+			      tracts[0]['properties']['neighborhood'] +
+			      '</strong></h3>' +
+			      '<p> Total Homes: '+
+			      tracts[0]['properties']['All Housing Units'] +
+			      '</p><p>Vacant Homes: ' + tracts[0]['properties']['All Vacant Homes'] +
+			      '</p><p>Homes Added Since 1950 (includes UC Campus, Northside, Southside and Frat Row combined) : ' + tracts[0]['properties']['NetUnits'] +
+			      '</p><p>Homes Owned: ' + own + 
+			      '%</p><p>Homes Rented: ' + rent + '%';
+		}
+		else{
+			document.getElementById('pd').innerHTML =
+			      '<h3><strong>' +
+			      tracts[0]['properties']['neighborhood'] +
+			      '</strong></h3>' +
+			      '<p> Total Homes: '+
+			      tracts[0]['properties']['All Housing Units'] +
+			      '</p><p>Vacant Homes: ' + tracts[0]['properties']['All Vacant Homes'] +
+			      '</p><p>Homes Added Since 1950: ' + tracts[0]['properties']['NetUnits'] +
+			      '</p><p>Homes Owned: ' + own + 
+			      '%</p><p>Homes Rented: ' + rent + '%';
+		}
 	    }
     	   else if ([selectedLayer] == 'BlackPer' || [selectedLayer] == 'WhitePer' || [selectedLayer] == 'OtherPer'){
                 for (i = 0; i < layers.length; i++) {
