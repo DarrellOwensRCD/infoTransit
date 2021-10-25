@@ -368,15 +368,28 @@
                   legend.appendChild(item);
                 }
                 if([selectedLayer] == 'NetPop'){
-                  document.getElementById('pd').innerHTML =
-                    '<h3><strong>' +
-                    tracts[0]['properties']['neighborhood'] +
-                    '</strong></h3>' +
-                    '<p> Total Population: '+
-                    tracts[0]['properties']['Population'] +
-                    '</p><p>Percentage : 100%' +
-                   '</p><p>Change in Population since 1950: ' +
-                     tracts[0]['properties']['PopNet'];
+			if(tracts[0]['properties']['GISJOIN'] == 'G0600010BE0005BB' || tracts[0]['properties']['GISJOIN'] == 'G0600010BE0005BA' || tracts[0]['properties']['GISJOIN'] == 'G0600010BE0005BC'){
+			    document.getElementById('pd').innerHTML =
+			    '<h3><strong>' +
+			    tracts[0]['properties']['neighborhood'] +
+			    '</strong></h3>' +
+			    '<p> Total Population: '+
+			    tracts[0]['properties']['Population'] +
+			    '</p><p>Percentage : 100%' +
+			   '</p><p>Change in Population since 1950 (includes UC Campus, Northside, Southside and Frat Row combined): ' +
+			     tracts[0]['properties']['PopNet'];			
+			}
+			else{
+			    document.getElementById('pd').innerHTML =
+			    '<h3><strong>' +
+			    tracts[0]['properties']['neighborhood'] +
+			    '</strong></h3>' +
+			    '<p> Total Population: '+
+			    tracts[0]['properties']['Population'] +
+			    '</p><p>Percentage : 100%' +
+			   '</p><p>Change in Population since 1950: ' +
+			     tracts[0]['properties']['PopNet'];
+			}
                 }
                 else{
           		    document.getElementById('pd').innerHTML =
