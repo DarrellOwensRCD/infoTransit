@@ -102,10 +102,13 @@
   </h3>
   <select id='layerpicker'>
   <option> select</option>
-    <option value = "BlackPop">Black</option>
-    <option value="WhitePop">White</option>
-    <option value="OtherPop">Other Race</option>
-    <option value="NetUnits">Housing Growth</option>
+    <option value ="BlackPer">Black population</option>
+    <option value="WhitePer">White population</option>
+    <option value="OtherPer">Other Race population</option>
+    <option value ="BlackPop">Black Change</option>
+    <option value="WhitePop">White Change</option>
+    <option value="OtherPop">Other Race Change</option>
+    <option value="NetUnits">Housing Change</option>
     <option value="NetRent">Rent Control</option>  
 </select>
 </div>
@@ -131,7 +134,7 @@
 	map.addControl(nav, 'top-left')
 	let hoveredStateId = null;
       // map layers -- we iterate through these to turn them all off
-	let mapLayers = ['NetRent','WhitePop', 'BlackPop','OtherPop', 'NetUnits']
+	let mapLayers = ['NetRent','WhitePop', 'BlackPop','OtherPop', 'NetUnits', 'BlackPer', 'WhitePer', 'OtherPer']
       // layer listener
       const selectElement = document.querySelector('#layerpicker');
 
@@ -203,6 +206,22 @@
 		'',
 		'',
         ];
+	var layers_per = [
+          '0%',
+          '10%',
+          '30%',
+          '50%',
+          '70%',
+          '90%',
+        ];
+        var colors_per = [
+          '#eeeee4',
+          '#ceedef',
+          '#82dae9',
+          '#47bbe3',
+          '#477fd4',
+          '#494fa2'
+        ];
         // create legend
 	for (i = 0; i < layers.length; i++) {
           var layer = layers[i];
@@ -238,6 +257,7 @@
         "OtherPop" : "Other Race Percentage",
         "WhitePop" : "White Percentage",
         }
+	
         // change info window on hover
         map.on('mousemove', function(e) {
           var tracts = map.queryRenderedFeatures(e.point, {
@@ -305,6 +325,36 @@
 		      '%</p><p>Monthly Median Rent (1950): $' + tracts[0]['properties']['Median Monthly Rent'] +
 		      '</p><p>Median Income (1950): $' + tracts[0]['properties']['Median Income'] ;
 	    }
+	    else if ([selectedLayer] == 'BlackPer' || [selectedLayer] == 'WhitePer' || [selectedLayer] == 'OtherPer'){
+                for (i = 0; i < layers.length; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+                for (i = 0; i < layers.length; i++) {
+                  var layer = layers_per[i];
+                  var color = colors_per[i];
+                  var item = document.createElement('div');
+                  var key = document.createElement('span');
+                  key.className = 'legend-key';
+                  key.style.backgroundColor = color;
+
+                  var value = document.createElement('span');
+                  value.innerHTML = layer;
+                  item.appendChild(key);
+                  item.appendChild(value);
+                  legend.appendChild(item);
+                }
+              document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              tracts[0]['properties']['neighborhood'] +
+              '</strong></h3>' +
+              '<p> Total Population: '+
+              tracts[0]['properties']['Population'] +
+              '</p><p>'+ race[selectedLayer] +
+              ': ' + tracts[0]['properties'][racename[selectedLayer]] +
+              '</p><p>Percentage ' + racename[selectedLayer] + ': ' +
+              tracts[0]['properties'][raceper[selectedLayer]] + 
+              '%</p>';
+            }
 	    else{
                 for (i = 0; i < layers.length; i++) {
                   legend.removeChild(legend.lastElementChild);
