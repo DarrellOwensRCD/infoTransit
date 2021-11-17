@@ -128,19 +128,36 @@
       map.addControl(nav, 'top-left');
     
       // map layers -- we iterate through these to turn them all off
-      let mapLayers = ['Homes', 'Black', 'Latino', 'White']
+      // map layers -- we iterate through these to turn them all off
+      let mapLayers = ['Homes', 'Black', 'Latino', 'White', 'Asian', 'Mixed', 'Other','Native','Pacific']
       subject = {"Black": "Black Population",
        "Homes" : "Housing Count",
        "Latino" : "Latino Population",
-       "White" : "White Population"}
+       "White" : "White Population",
+       "Asian" : "Asian Population",
+       "Pacific": "Pacific Islander Population",
+       "Native" : "Native American Population",
+       "Other" : "Other Race Population",
+       "Mixed" : "Mixed Race Population"}
        topic = { "Black" : "Black",
-	"Homes" : "Home",
+				"Homes" : "Home",
         "White" : "White",
-        "Latino" : "Latino"}
+        "Latino" : "Latino",
+        "Asian" : "Asian",
+        "Native" : "Native",
+        "Pacific" : "Pacific",
+        "Other" : "Other",
+        "Mixed" : "Mixed",
+        }
         net_topic = { "Black" : "BlackNet",
-	"Homes" : "HomeNet",
+				"Homes" : "HomeNet",
         "Latino" : "LatinoNet",
-        "White" : "WhiteNet"}
+        "White" : "WhiteNet",
+        "Asian" : "AsianNet",
+        "Native" : "NativeNet",
+        "Pacific" : "PacificNet",
+        "Other" : "OtherNet",
+        "Mixed" : "MixedNet"}
       // layer listener
       const selectElement = document.querySelector('#layerpicker');
 
