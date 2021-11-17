@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>2020 Black County U.S. Data</title>
+  <title>2020 Census U.S. County Data</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
@@ -57,7 +57,7 @@
       }
       #features {
         top: 0;
-        height: 200px;
+        height: 225px;
         margin-top: 20px;
         width: 250px;
       }
@@ -91,11 +91,11 @@
 
 </head>
 <body>
-    <div id="map"></div>
+<div id="map"></div>
 <div class="map-overlay" id="features">
   <div id="pd">
-    <h2>Change in Black population from 2010 to 2020 by County</h2>
-    <p>Hover mouse over county for specific increase decrease in Black residents</p>
+    <h2>Change in population from 2010 to 2020 by county</h2>
+    <p>Hover mouse over county for specific increase or decrease in select racial or housing catagories. All groups are non-Hispanic except Latinos.</p>
   </div>
   <h3>
   Topic:
@@ -104,6 +104,8 @@
     <option>select</option>
     <option value="Black">Black Growth/Decline</option>
     <option value="Homes">Home Growth/Decline</option>
+    <option value="White">White Growth/Decline</option>
+    <option value="Latino">Latino Growth/Decline</option>
   </select>
 </div>
 <div class="map-overlay" id="legend"></div>
@@ -126,14 +128,19 @@
       map.addControl(nav, 'top-left');
     
       // map layers -- we iterate through these to turn them all off
-      let mapLayers = ['Homes', 'Black']
-      layer = {'Black' : ''}
+      let mapLayers = ['Homes', 'Black', 'Latino', 'White']
       subject = {"Black": "Black Population",
-       "Homes" : "Housing Count"}
+       "Homes" : "Housing Count",
+       "Latino" : "Latino Population",
+       "White" : "White Population"}
        topic = { "Black" : "Black",
-				"Homes" : "Home"}
+	"Homes" : "Home",
+        "White" : "White",
+        "Latino" : "Latino"}
         net_topic = { "Black" : "BlackNet",
-				"Homes" : "HomeNet"}
+	"Homes" : "HomeNet",
+        "Latino" : "LatinoNet",
+        "White" : "WhiteNet"}
       // layer listener
       const selectElement = document.querySelector('#layerpicker');
 
