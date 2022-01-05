@@ -201,7 +201,22 @@ const mousemove = function(map, layerName) {
       layers: [layerName]
     });
 
-    if (tracts.length > 0) {
+    if ([layerName] == 'BlackPercent') {
+      document.getElementById('pd').innerHTML =
+        '<h3><strong> Year: ' +
+        tracts[0]['properties']['Year'] +
+        '</strong></h3>' +
+        '<h3><strong>' +
+        tracts[0]['properties']['neighborhood'] +
+        '</strong></h3>' +
+        '<p> Total Population: ' +
+        tracts[0]['properties']['Population'] +
+        '</p> <p> Black Population: ' +
+        tracts[0]['properties']['Black'] +
+        '</p><p> Percentage Black: ' +
+        tracts[0]['properties']['BlackPer'] +'%</p>';
+    }
+    else{
       document.getElementById('pd').innerHTML =
         '<h3><strong> Year: ' +
         tracts[0]['properties']['Year'] +
