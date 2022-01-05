@@ -125,14 +125,14 @@ p {
 mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
 var beforeMap = new mapboxgl.Map({
   container: 'before',
-  style: 'mapbox://styles/idothethinking/ckp59j2a32cbs17rpdm8dypo8',
+  style: 'mapbox://styles/idothethinking/ckv7bfrn76lky14mx9tyixnrl',
   center: [-122.275, 37.876],
   zoom: 11
 });
 
 var afterMap = new mapboxgl.Map({
   container: 'after',
-  style: 'mapbox://styles/idothethinking/cksb2btcg17z517mwroc8ems4',
+  style: 'mapbox://styles/idothethinking/cky22s5qd7uqm14pehlrnrn3v',
   center: [-122.275, 37.876],
   zoom: 11
 });
@@ -201,7 +201,22 @@ const mousemove = function(map, layerName) {
       layers: [layerName]
     });
 
-    if (tracts.length > 0) {
+    if ([layerName] == 'BlackPercent') {
+      document.getElementById('pd').innerHTML =
+        '<h3><strong> Year: ' +
+        tracts[0]['properties']['Year'] +
+        '</strong></h3>' +
+        '<h3><strong>' +
+        tracts[0]['properties']['neighborhood'] +
+        '</strong></h3>' +
+        '<p> Total Population: ' +
+        tracts[0]['properties']['Population'] +
+        '</p> <p> Black Population: ' +
+        tracts[0]['properties']['Black'] +
+        '</p><p> Percentage Black: ' +
+        tracts[0]['properties']['BlackPer'] +'%</p>';
+    }
+    else{
       document.getElementById('pd').innerHTML =
         '<h3><strong> Year: ' +
         tracts[0]['properties']['Year'] +
