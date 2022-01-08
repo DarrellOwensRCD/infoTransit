@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Part II: History of Gentrification in Berkeley Maps</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script type="text/javascript" src="/js/lib/dummy.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+  <style id="compiled-css" type="text/css">
+      option:disabled {
+       font-family:"Arial Black";
+       background: #bdbdbd;
+       color: black;
+       width: 500px;
+       padding: 5px;
+       }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 220px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #layerlist {
+        top: 0;
+        left: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #legend {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      height: 130px;
+      margin-bottom: 40px;
+      width: 90px;
+      }
+      .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+      }
+      #menu {
+      position: absolute;
+      top: 10px; 
+      left: 50px;
+      background: #efefef;
+      padding: 10px;
+      font-family: 'Open Sans', sans-serif;
+      }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+
+
+<div id="map"></div>
+<div id="menu">
+  <input id="ckr5izyr01h2u18prlyftuzxg" type="radio" name="rtoggle" value="1970">
+  <label for="ckr5izyr01h2u18prlyftuzxg">1970 - 1980</label>
+  <input id="ckr79bh501hyn18qyfxmiax0t" type="radio" name="rtoggle" value="1980">
+  <label for="ckr79bh501hyn18qyfxmiax0t">1980 - 1990</label>
+  <input id="ckrinu0ge0izf17qqfxpmy4ms" type="radio" name="rtoggle" value="1990">
+  <label for="ckrinu0ge0izf17qqfxpmy4ms">1990 - 2000</label>
+</div>
+
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>Census Data From 1970 to 2000</h2>
+    <p>Click a circle on the top left to select a decade. Then, select a racial group or housing data from the drop down menu below this text. Hover mouse over map to see neighborhood data</p>
+  </div>
+  <h3>
+  Topic:
+  </h3>
+  <select id='layerpicker' style = "width:150px;">
+    <option default="true" hidden="true">select</option>
+    <option disabled = "disabled">Demographic Change</option>
+    <option id = 'BC70' value ="NetBlackCounty">Black Change (1970s)</option>
+    <option id = 'WC70' value ="NetWhiteCounty">White Change (1970s)</option>
+    <option id = 'AC70' value ="NetAsianCounty">Asian Change (1970s)</option>
+    <option id = 'NC70' value ="NetNativeCounty">Native Change (1970s)</option>
+    <option id = 'BC80' value ="NetBlackCounty">Black Change (1980s)</option>
+    <option id = 'WC80' value ="NetWhiteCounty">White Change (1980s)</option>
+    <option id = 'LC80' value ="NetLatinoCounty">Latino Change (1980s)</option>
+    <option id = 'AC80' value ="NetAsianCounty">Asian Change (1980s)</option>
+    <option id = 'NC80' value ="NetNativeCounty">Native Change (1980s)</option>
+    <option id = 'BC90' value ="NetBlackCounty">Black Change (1990s)</option>
+    <option id = 'WC90' value ="NetWhiteCounty">White Change (1990s)</option>
+    <option id = 'LC90' value ="NetLatinoCounty">Latino Change (1990s)</option>
+    <option id = 'AC90' value ="NetAsianCounty">Asian Change (1990s)</option>
+    <option id = 'NC90' value ="NetNativeCounty">Native Change (1990s)</option>
+    <option disabled = "disabled">Demographic Count</option>
+    <option id = 'BP70' value ="BlackComp">Black Population (1980)</option>
+    <option id = 'WP70' value ="WhiteComp">White Population (1980)</option>
+    <option id = 'LP70' value ="LatinoComp">Latino Population (1980)</option>
+    <option id = 'AP70' value ="AsianComp">Asian Population (1980)</option>
+    <option id = 'NP70' value ="NativeComp">Native Population (1980)</option>
+    <option id = 'BP80' value ="BlackComp">Black Population (1990)</option>
+    <option id = 'WP80' value ="WhiteComp">White Population (1990)</option>
+    <option id = 'LP80' value ="LatinoComp">Latino Population (1990)</option>
+    <option id = 'AP80' value ="AsianComp">Asian Population (1990)</option>
+    <option id = 'NP80' value ="NativeComp">Native Population (1990)</option>
+    <option id = 'BP90' value ="BlackComp">Black Population (2000)</option>
+    <option id = 'WP90' value ="WhiteComp">White Population (2000)</option>
+    <option id = 'LP90' value ="LatinoComp">Latino Population (2000)</option>
+    <option id = 'AP90' value ="AsianComp">Asian Population (2000)</option>
+    <option id = 'NP90' value ="NativeComp">Native Population (2000)</option>
+    <option disabled = "disabled" >Owner-Occupied Homes</option>
+    <option id = 'BH70' value ="NetBlackHomeownersCounty">Black Homeowner Change (1970s)</option>
+    <option id = 'WH70' value ="NetWhiteHomeownersCounty">White Homeowner Change (1970s)</option>
+    <option id = 'BH80' value ="NetBlackHomeownersCounty">Black Homeowner Change (1980s)</option>
+    <option id = 'WH80' value ="NetWhiteHomeownersCounty">White Homeowner Change (1980s)</option>
+    <option id = 'LH80' value ="NetLatinoHomeownersCounty">Latino Homeowner Change (1980s)</option>
+    <option id = 'BH90' value ="NetBlackHomeownersCounty">Black Homeowner Change (1990s)</option>
+    <option id = 'WH90' value ="NetWhiteHomeownersCounty">White Homeowner Change (1990s)</option>
+    <option id = 'LH90' value ="NetLatinoHomeownersCounty">Latino Homeowner Change (1990s)</option>
+    <option id = 'AH90' value ="NetAsianHomeownersCounty">Asian Homeowner Change (1990s)</option>
+    <option id = 'NH90' value ="NetNativeHomeownersCounty">Native Homeowner Change (1990s)</option>
+    <option disabled = "disabled" >Renter-Occupied Homes</option>
+    <option id = 'BR70' value ="NetBlackRentersCounty">Black Renter Change (1970s)</option>
+    <option id = 'WR70' value ="NetWhiteRentersCounty">White Renter Change (1970s)</option>
+    <option id = 'BR80' value ="NetBlackRentersCounty">Black Renter Change (1980s)</option>
+    <option id = 'WR80' value ="NetWhiteRentersCounty">White Renter Change (1980s)</option>
+    <option id = 'LR80' value ="NetLatinoRentersCounty">Latino Renter Change (1980s)</option>
+    <option id = 'BR90' value ="NetBlackRentersCounty">Black Renter Change (1990s)</option>
+    <option id = 'WR90' value ="NetWhiteRentersCounty">White Renter Change (1990s)</option>
+    <option id = 'LR90' value ="NetLatinoRentersCounty">Latino Renter Change (1990s)</option>
+    <option id = 'AR90' value ="NetAsianRentersCounty">Asian Renter Change (1990s)</option>
+    <option id = 'NR90' value ="NetNativeRentersCounty">Native Renter Change (1990s)</option>
+    <option disabled = "disabled" >Housing and Vacancy</option>
+    <option id = 'HOME70' value ="NetHomesCounty">Change in Housing Units (1970s)</option>
+    <option id = 'HOME80' value ="NetHomesCounty">Change in Housing Units (1980s)</option>
+    <option id = 'HOME90' value ="NetHomesCounty">Change in Housing Units (1990s)</option>
+    <option id = 'VAC70' value ="NetVacantCounty">Change in Vacant Homes (1970s)</option>
+    <option id = 'VAC80' value ="NetVacantCounty">Change in Vacant Homes (1980s)</option>
+    <option id = 'VAC90' value ="NetVacantCounty">Change in Vacant Homes (1990s)</option>
+  </select>
+</div>
+<div class="map-overlay" id="legend"></div>
+    <script type="text/javascript">//<![CDATA[
+      //Drop down menu
+      var year = 0
+      var day = document.getElementById('menu');
+      var ansA = document.getElementById('BC70');
+      var ansB = document.getElementById('WC70');
+      var ansC = document.getElementById('BC80');
+      var ansD = document.getElementById('WC80');
+      var ansE = document.getElementById('BC90');
+      var ansF = document.getElementById('WC90');
+      var ansG = document.getElementById('AC70');
+      var ansH = document.getElementById('NC70');
+      var ansI = document.getElementById('AC80');
+      var ansJ = document.getElementById('NC80');
+      var ansK = document.getElementById('AC90');
+      var ansL = document.getElementById('NC90');
+
+      var ansM = document.getElementById('BH70');
+      var ansN = document.getElementById('WH70');
+      var ansO = document.getElementById('BH80');
+      var ansP = document.getElementById('WH80');
+      var ansQ = document.getElementById('BH90');
+      var ansR = document.getElementById('WH90');
+      //var ansS = document.getElementById('AH70');
+      //var ansT = document.getElementById('NH70');
+      //var ansU = document.getElementById('AH80');
+      //var ansV = document.getElementById('NH80');
+      var ansW = document.getElementById('AH90');
+      var ansX = document.getElementById('NH90');
+
+      var ansY = document.getElementById('BR70');
+      var ansZ = document.getElementById('WR70');
+      var ansAA = document.getElementById('BR80');
+      var ansAB = document.getElementById('WR80');
+      var ansAC = document.getElementById('BR90');
+      var ansAD = document.getElementById('WR90');
+      //var ansAE = document.getElementById('AR70');
+      //var ansAF = document.getElementById('NR70');
+      //var ansAG = document.getElementById('AR80');
+      //var ansAH = document.getElementById('NR80');
+      var ansAI = document.getElementById('AR90');
+      var ansAJ = document.getElementById('NR90');
+      //Latinos 
+      var ansLaA = document.getElementById('LC80');
+      var ansLaB = document.getElementById('LC90');
+      var ansLaC = document.getElementById('LH80');
+      var ansLaD = document.getElementById('LR80');
+      var ansLaE = document.getElementById('LH90');
+      var ansLaF = document.getElementById('LR90');
+      //Homes and Vacant
+      var ansHA = document.getElementById('HOME70');
+      var ansHB = document.getElementById('HOME80');
+      var ansHC = document.getElementById('HOME90');
+      var ansVA = document.getElementById('VAC70');
+      var ansVB = document.getElementById('VAC80');
+      var ansVC = document.getElementById('VAC90');
+      //Comp
+      var ansPB7 = document.getElementById('BP70');
+      var ansPA7 = document.getElementById('AP70');
+      var ansPW7 = document.getElementById('WP70');
+      var ansPN7 = document.getElementById('NP70');
+      var ansPL7 = document.getElementById('LP70');
+
+      var ansPB8 = document.getElementById('BP80');
+      var ansPA8 = document.getElementById('AP80');
+      var ansPW8 = document.getElementById('WP80');
+      var ansPN8 = document.getElementById('NP80');
+      var ansPL8 = document.getElementById('LP80');
+
+      var ansPB9 = document.getElementById('BP90');
+      var ansPA9 = document.getElementById('AP90');
+      var ansPW9 = document.getElementById('WP90');
+      var ansPN9 = document.getElementById('NP90');
+      var ansPL9 = document.getElementById('LP90');
+      ansE.style.display = ansF.style.display = ansC.style.display = ansD.style.display = ansA.style.display = ansB.style.display = 'none';
+      ansG.style.display = ansH.style.display = ansI.style.display = ansJ.style.display = ansK.style.display = ansL.style.display = 'none';
+      //M AND FORWARD
+      ansM.style.display = ansN.style.display = ansO.style.display = ansP.style.display = ansQ.style.display = ansR.style.display = 'none';
+      ansW.style.display = ansX.style.display = ansY.style.display = 'none';
+      ansZ.style.display = ansAA.style.display = ansAB.style.display = ansAC.style.display = ansAD.style.display = 'none';
+      ansAI.style.display = ansAJ.style.display = 'none';
+      ansLaA.style.display = ansLaB.style.display = ansLaC.style.display = ansLaD.style.display = ansLaE.style.display = ansLaF.style.display = 'none';
+      ansHA.style.display = ansHB.style.display = ansHC.style.display = ansVA.style.display = ansVB.style.display = ansVC.style.display = 'none';
+      ansPB7.style.display = ansPA7.style.display = ansPW7.style.display = ansPN7.style.display = ansPL7.style.display = 'none';
+      ansPB8.style.display = ansPA8.style.display = ansPW8.style.display = ansPN8.style.display = ansPL8.style.display = 'none';
+      ansPB9.style.display = ansPA9.style.display = ansPW9.style.display = ansPN9.style.display = ansPL9.style.display = 'none';
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+		 let selectedLayer = 'select'
+     let selectMenu = 'ckr5izyr01h2u18prlyftuzxg'
+
+      //create map
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/ckr5izyr01h2u18prlyftuzxg', // map style URL from Mapbox Studio
+        center:[-122.269,37.873],
+        zoom: 12,
+      });
+
+      const layerList = document.getElementById('menu');
+      const inputs = layerList.getElementsByTagName('input');
+      
+      for (const input of inputs) {
+        input.onclick = (layer) => {
+        const layerId = layer.target.id;
+        map.setStyle('mapbox://styles/idothethinking/' + layerId);
+        val = input.value;
+        year = parseInt(val)
+        };
+      }      
+      //Change dropdown menu based on selected bubble FILL IN THE NONE FOR ASIANS AND NATIVES
+
+      day.addEventListener('change', function() {
+        console.log(val);
+        if(val === '1970') { //The 1970s
+          ansG.style.display = ansH.style.display = ansA.style.display = ansB.style.display = 'initial';
+          ansM.style.display = ansN.style.display = ansY.style.display = ansZ.style.display = 'initial'; //Homeowners and Renters
+          ansHA.style.display = ansVA.style.display = 'initial';
+          ansPB7.style.display = ansPA7.style.display = ansPW7.style.display = ansPN7.style.display = ansPL7.style.display = 'initial';
+          ansI.style.display = ansJ.style.display = ansC.style.display = ansD.style.display = 'none';
+          ansK.style.display = ansL.style.display = ansE.style.display = ansF.style.display = 'none';
+          //cont
+          ansO.style.display = ansP.style.display = ansQ.style.display = ansR.style.display = 'none';
+          ansW.style.display = ansX.style.display = ansAA.style.display = ansAB.style.display = 'none';
+          ansAC.style.display = ansAD.style.display = ansAI.style.display = ansAJ.style.display = 'none';
+          ansLaA.style.display = ansLaB.style.display = ansLaC.style.display = ansLaD.style.display = ansLaE.style.display = ansLaF.style.display = 'none';
+          ansHB.style.display = ansHC.style.display = ansVB.style.display = ansVC.style.display = 'none';
+          ansPB8.style.display = ansPA8.style.display = ansPW8.style.display = ansPN8.style.display = ansPL8.style.display = 'none';
+          ansPB9.style.display = ansPA9.style.display = ansPW9.style.display = ansPN9.style.display = ansPL9.style.display = 'none';
+        } 
+        else if(val === '1980'){ //The 1980s
+          ansO.style.display = ansP.style.display = ansAA.style.display = ansAB.style.display = 'initial'; //Homeowners and Renters
+          ansI.style.display = ansJ.style.display = ansC.style.display = ansD.style.display = 'initial';
+          ansLaA.style.display = ansLaC.style.display = ansLaD.style.display = 'initial'
+          ansHB.style.display = ansVB.style.display = 'initial';
+          ansPB8.style.display = ansPA8.style.display = ansPW8.style.display = ansPN8.style.display = ansPL8.style.display = 'initial';
+          ansG.style.display = ansH.style.display = ansA.style.display = ansB.style.display = 'none';
+          ansK.style.display = ansL.style.display = ansE.style.display = ansF.style.display = 'none';
+          //cont
+          ansM.style.display = ansN.style.display = ansQ.style.display = ansR.style.display = 'none';
+          ansW.style.display = ansX.style.display = ansY.style.display = ansZ.style.display = 'none';
+          ansAC.style.display = ansAD.style.display = ansAI.style.display = ansAJ.style.display = 'none';
+          ansLaB.style.display = ansLaE.style.display = ansLaF.style.display = 'none';
+          ansHA.style.display = ansHC.style.display = ansVA.style.display = ansVC.style.display = 'none';
+          ansPB7.style.display = ansPA7.style.display = ansPW7.style.display = ansPN7.style.display = ansPL7.style.display = 'none';
+          ansPB9.style.display = ansPA9.style.display = ansPW9.style.display = ansPN9.style.display = ansPL9.style.display = 'none';
+        }
+        else { //The 1990s
+          ansQ.style.display = ansR.style.display = ansW.style.display = ansX.style.display = 'initial'; //Homeowners and Renters
+          ansAC.style.display = ansAD.style.display = ansAI.style.display = ansAJ.style.display = 'initial'; //Homeowners and Renters
+          ansK.style.display = ansL.style.display = ansE.style.display = ansF.style.display = 'initial';
+          ansLaB.style.display = ansLaE.style.display = ansLaF.style.display = 'initial'
+          ansHC.style.display = ansVC.style.display = 'initial';
+          ansPB9.style.display = ansPA9.style.display = ansPW9.style.display = ansPN9.style.display = ansPL9.style.display = 'initial';
+          ansAA.style.display = ansAB.style.display = ansY.style.display = ansZ.style.display = 'none';
+          ansG.style.display = ansH.style.display = ansA.style.display = ansB.style.display = 'none';
+          ansI.style.display = ansJ.style.display = ansC.style.display = ansD.style.display =  'none';
+          //CONT
+          ansM.style.display = ansN.style.display = ansO.style.display = ansP.style.display = 'none';
+          ansLaA.style.display = ansLaC.style.display = ansLaD.style.display = 'none';
+          ansHA.style.display = ansHB.style.display = ansVA.style.display = ansVB.style.display = 'none';
+          ansPB7.style.display = ansPA7.style.display = ansPW7.style.display = ansPN7.style.display = ansPL7.style.display = 'none';
+          ansPB8.style.display = ansPA8.style.display = ansPW8.style.display = ansPN8.style.display = ansPL8.style.display = 'none';
+
+        }
+      });
+      //Nav controls
+      var nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, 'top-left');
+    
+      // map layers -- we iterate through these to turn them all off
+      let mapLayers = ['NetBlackRentersCounty','NetBlackHomeownersCounty','NetBlackCounty', 'NetWhiteRentersCounty','NetWhiteHomeownersCounty','NetWhiteCounty', "NetAsianCounty","NetAsianRentersCounty","NetAsianHomeownersCounty", "NetNativeRentersCounty","NetNativeHomeownersCounty","NetNativeCounty", "NetVacantCounty", "NetPopulationCounty", "NetHomeCounty", "NetLatinoCounty", "NetLatinoRentersCounty", "NetLatinoHomeownersCounty", "NetHomesCounty", "NetVacantCounty", 
+        "BlackComp", "WhiteComp", "AsianComp", "LatinoComp", "NativeComp", "VacantComp"]
+
+      layer = {'Black' : ''}
+
+      subject = {
+        "BlackComp": "Black Population",
+        "WhiteComp" : "White Population",
+        "LatinoComp" : "Latino Population",
+        "AsianComp" : "Asian Population",
+        "NativeComp": "Native American Population",
+        "NetBlackCounty": "Black Population",
+        "NetWhiteCounty" : "White Population",
+        "NetLatinoCounty" : "Latino Population",
+        "NetAsianCounty" : "Asian Population",
+        "NetNativeCounty": "Native American Population",
+        "NetVacantCounty" : "Vacant Units",
+        "NetPopulationCounty" : "Total Population",
+        "NetHomesCounty": "Housing Units",
+        'NetBlackRentersCounty' : "Black Renter Households",
+        'NetBlackHomeownersCounty': "Black Owner Households",
+        'NetWhiteRentersCounty' : "White Renter Households",
+        'NetWhiteHomeownersCounty' : "White Owner Households",
+        "NetAsianRentersCounty" : "Asian Renter Households",
+        "NetAsianHomeownersCounty" : "Asian Owner Households",
+        "NetNativeRentersCounty" : "Native American Renter Households",
+        "NetNativeHomeownersCounty" : "Native American Owner Households",
+        "NetLatinoHomeownersCounty" : "Latino Owner Households",
+        "NetLatinoRentersCounty" : "Latino Renter Households"
+        } //Continue Filling These Out and then do if statements for certain decades below, change CSS if need (for compositions)
+
+      topic = { 
+        "BlackComp": "Black",
+        "WhiteComp" : "White",
+        "LatinoComp" : "Latino",
+        "AsianComp" : "Asian",
+        "NativeComp": "Native American",
+        "NetBlackCounty": "Black",
+        "NetWhiteCounty" : "White",
+        "NetLatinoCounty" : "Latino",
+        "NetAsianCounty" : "Asian",
+        "NetNativeCounty": "Native American",
+        "NetVacantCounty" : "Vacant",
+        "NetPopulationCounty" : "Population",
+        "NetHomesCounty": "Homes",
+        'NetBlackRentersCounty' : "Black Renters",
+        'NetBlackHomeownersCounty': "Black Homeowners",
+        'NetWhiteRentersCounty' : "White Renters",
+        'NetWhiteHomeownersCounty' : "White Homeowners",
+        "NetAsianRentersCounty" : "Asian Renters",
+        "NetAsianHomeownersCounty" : "Asian Homeowners",
+        "NetNativeRentersCounty" : "Native Renters",
+        "NetNativeHomeownersCounty" : "Native Homeowners",
+        "NetLatinoHomeownersCounty" : "Latino Homeowners",
+        "NetLatinoRentersCounty" : "Latino Renters"}
+
+      net_topic = { "NetBlackCounty": "BlackNet",
+        "NetWhiteCounty" : "WhiteNet",
+        "NetLatinoCounty" : "LatinoNet",
+        "NetAsianCounty" : "AsianNet",
+        "NetNativeCounty": "Native AmericanNet",
+        "NetVacantCounty" : "VacantNet",
+        "NetPopulationCounty" : "PopulationNet",
+        "NetHomesCounty": "HomesNet",
+        'NetBlackRentersCounty' : "Net Black Renters",
+        'NetBlackHomeownersCounty': "Net Black Homeowners",
+        'NetWhiteRentersCounty' : "Net White Renters",
+        'NetWhiteHomeownersCounty' : "Net White Homeowners",
+        "NetAsianRentersCounty" : "Net Asian Renters",
+        "NetAsianHomeownersCounty" : "Net Asian Homeowners",
+        "NetNativeRentersCounty" : "Net Native Renters",
+        "NetNativeHomeownersCounty" : "Net Native Homeowners",
+        "NetLatinoHomeownersCounty" : "Net Latino Homeowners",
+        "NetLatinoRentersCounty" : "Net Latino Renters"
+      }
+      // layer listener
+      const selectElement = document.querySelector('#layerpicker');
+
+      selectElement.addEventListener('change', (event) => {
+        console.log(event.target.value)
+        selectedLayer = event.target.value
+        mapLayers.forEach(l => map.setLayoutProperty(l, "visibility", "none"))
+        map.setLayoutProperty(event.target.value, "visibility", "visible")
+      });
+
+        // define layer names
+        var layers = [
+        	'+2,000',
+          '+1,000',
+          '+500',
+          '0',
+          '-500',
+          '-1,000',
+          '-2,000',
+        ];
+        var colors = [
+          '#035101',
+          '#07d600',
+          '#a1ff9e',
+          '#ffffff',
+          '#fe7171',
+          '#fe2c10',
+          '#930101'
+
+        ];
+        // define layer names
+        var layers_per = [
+          '0%',
+          '10%',
+          '30%',
+          '50%',
+          '70%',
+          '>90%',
+          '',
+        ];
+        var colors_per = [
+          '#ffffff',
+          '#ceedef',
+          '#82dae9',
+          '#47bbe3',
+          '#477fd4',
+          '#494fa2',
+          '',
+        ];
+
+        // create legend
+  for (i = 0; i < layers.length; i++) {
+    var layer = layers[i];
+    var color = colors[i];
+    var item = document.createElement('div');
+    var key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
+
+    var value = document.createElement('span');
+    value.innerHTML = layer;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+  }
+      // wait for map to load before adjusting it
+      map.on('load', function () {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+        // set map bounds to the continental US
+
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+
+        // change info window on hover
+        map.on('mousemove', function (e) {
+          var tracts = map.queryRenderedFeatures(e.point,{
+            layers: [selectedLayer]
+          });
+
+          if (tracts.length > 0 ) {
+            if([selectedLayer] == 'BlackComp' || [selectedLayer] == 'WhiteComp' || [selectedLayer] == 'AsianComp' || [selectedLayer] == 'NativeComp' || [selectedLayer] == 'LatinoComp'){
+              for (i = 0; i < layers.length; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+              for (i = 0; i < layers.length; i++) {
+                var layer = layers_per[i];
+                var color = colors_per[i];
+                var item = document.createElement('div');
+                var key = document.createElement('span');
+                key.className = 'legend-key';
+                key.style.backgroundColor = color;
+
+                var value = document.createElement('span');
+                value.innerHTML = layer;
+                item.appendChild(key);
+                item.appendChild(value);
+                legend.appendChild(item);
+              }  
+              }
+            else{
+              for (i = 0; i < layers.length; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+              for (i = 0; i < layers.length; i++) {
+                var layer = layers[i];
+                var color = colors[i];
+                var item = document.createElement('div');
+                var key = document.createElement('span');
+                key.className = 'legend-key';
+                key.style.backgroundColor = color;
+
+                var value = document.createElement('span');
+                value.innerHTML = layer;
+                item.appendChild(key);
+                item.appendChild(value);
+                legend.appendChild(item);
+              }             
+            }
+            if([selectedLayer] == 'BlackComp' || [selectedLayer] == 'WhiteComp' || [selectedLayer] == 'AsianComp' || [selectedLayer] == 'NativeComp' || [selectedLayer] == 'LatinoComp'){
+              var percent = Math.round((tracts[0]['properties'][topic[selectedLayer]] / tracts[0]['properties']['Population']) * 100)
+              document.getElementById('pd').innerHTML =
+                '<h3><strong>' +
+                tracts[0]['properties']['GISJOIN'] +
+                '</strong></h3>' +
+                '<p> Total Population: ' + 
+                tracts[0]['properties']['Population'] +
+                '</p> <p>' + subject[selectedLayer] + ': ' +
+                tracts[0]['properties'][topic[selectedLayer]]+
+                ' ('+ percent + '%)</p>';
+              }
+            else if([selectedLayer] == 'NetBlackCounty' || [selectedLayer] == 'NetWhiteCounty' || [selectedLayer] == 'NetAsianCounty' || [selectedLayer] == 'NetNativeCounty' || [selectedLayer] == 'NetLatinoCounty'){
+              var percent = Math.round((tracts[0]['properties'][topic[selectedLayer]] / tracts[0]['properties']['Population']) * 100)
+              document.getElementById('pd').innerHTML =
+                '<h3><strong>' +
+                tracts[0]['properties']['GISJOIN'] +
+                '</strong></h3>' +
+  							'<p> Total Population: ' + 
+                tracts[0]['properties']['Population'] +
+                '</p> <p>' + subject[selectedLayer] + ': ' +
+                tracts[0]['properties'][topic[selectedLayer]]+
+                ' ('+ percent + '%)</p><p> Net Difference since ' + year + ': ' +
+                tracts[0]['properties'][net_topic[selectedLayer]];
+              }
+              else if([selectedLayer] == "NetNativeHomeownersCounty" || [selectedLayer] == "NetBlackHomeownersCounty" || [selectedLayer] == "NetWhiteHomeownersCounty" || [selectedLayer] == "NetAsianHomeownersCounty" || [selectedLayer] == "NetLatinoHomeownersCounty"){
+                var percent = Math.round((tracts[0]['properties'][topic[selectedLayer]] / tracts[0]['properties']['Owner Units']) * 100)
+                document.getElementById('pd').innerHTML =
+                '<h3><strong>' +
+                tracts[0]['properties']['GISJOIN'] +
+                '</strong></h3>' +
+                '<p> Total Homeowner Households: ' +
+                tracts[0]['properties']['Owner Units'] +
+                '</p> <p>' + subject[selectedLayer] + ': ' +
+                tracts[0]['properties'][topic[selectedLayer]]+
+                ' ('+ percent + '%)</p><p> Net Difference since ' + year + ': ' +
+                tracts[0]['properties'][net_topic[selectedLayer]];
+              }
+              else if([selectedLayer] == "NetNativeRentersCounty" || [selectedLayer] == "NetBlackRentersCounty" || [selectedLayer] == "NetWhiteRentersCounty" || [selectedLayer] == "NetAsianRentersCounty" || [selectedLayer] == "NetLatinoRentersCounty"){
+                var percent = Math.round((tracts[0]['properties'][topic[selectedLayer]] / tracts[0]['properties']['Rental Units']) * 100)
+                document.getElementById('pd').innerHTML =
+                '<h3><strong>' +
+                tracts[0]['properties']['GISJOIN'] +
+                '</strong></h3>' +
+                '<p> Total Renter Households: ' +
+                tracts[0]['properties']['Rental Units'] +
+                '</p> <p>' + subject[selectedLayer] + ': ' +
+                tracts[0]['properties'][topic[selectedLayer]]+
+                ' ('+ percent + '%)</p><p> Net Difference since ' + year + ': ' +
+                tracts[0]['properties'][net_topic[selectedLayer]];
+              }
+              else if ([selectedLayer] == "NetHomesCounty"){ //Housing Units
+                var percent = Math.round((tracts[0]['properties'][topic[selectedLayer]] / tracts[0]['properties']['Homes']) * 100)
+                document.getElementById('pd').innerHTML =
+                '<h3><strong>' +
+                tracts[0]['properties']['GISJOIN'] +
+                '</strong></h3>' +
+                '<p> Total Housing Units: ' +
+                tracts[0]['properties']['Homes'] +
+                '</p> <p>Rented Homes: ' +
+                tracts[0]['properties']['Rental Units']+
+                '</p> <p>Owned Homes: ' +
+                tracts[0]['properties']['Owner Units']+
+                '</p><p> Net Homes since ' + year + ': ' +
+                tracts[0]['properties'][net_topic[selectedLayer]];                
+              }
+              else{ //Vacant
+                var percent = Math.round((tracts[0]['properties'][topic[selectedLayer]] / tracts[0]['properties']['Homes']) * 100)
+                document.getElementById('pd').innerHTML =
+                '<h3><strong>' +
+                tracts[0]['properties']['GISJOIN'] +
+                '</strong></h3>' +
+                '<p> Total Housing Units: ' +
+                tracts[0]['properties']['Homes'] +
+                '</p> <p>' + subject[selectedLayer] + ': ' +
+                tracts[0]['properties'][topic[selectedLayer]]+
+                ' ('+ percent + '%)</p><p> Net Difference since ' + year + ': ' +
+                tracts[0]['properties'][net_topic[selectedLayer]];                
+              }
+          }
+        });
+      });
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "oyq6pjae"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
+
