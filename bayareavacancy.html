@@ -241,7 +241,20 @@
           '#fec7d7',
           '#fffefe',
         ];
-
+        var layers_v = [
+          '>40%',
+          '30%',
+          '20%',
+          '10%',
+          '0%',
+        ];
+        var colors_v = [
+          '#93012c',
+          '#ca1a4f',
+          '#fd316d',
+          '#fd90b1',
+          '#fffefe',
+        ];
         // create legend
   for (i = 0; i < 5; i++) {
     var layer = layers_p[i];
@@ -292,7 +305,27 @@
                 legend.appendChild(item);
               }
 
-          }else{
+          }
+	else if([selectedLayer] == 'VacancyRate'){
+                for (i = 0; i < 5; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+                for (i = 0; i < 5; i++) {
+                var layer = layers_v[i];
+                var color = colors_v[i];
+                var item = document.createElement('div');
+                var key = document.createElement('span');
+                key.className = 'legend-key';
+                key.style.backgroundColor = color;
+
+                var value = document.createElement('span');
+                value.innerHTML = layer;
+                item.appendChild(key);
+                item.appendChild(value);
+                legend.appendChild(item);
+              }
+	}
+	else{
                 for (i = 0; i < 5; i++) {
                   legend.removeChild(legend.lastElementChild);
                 }
