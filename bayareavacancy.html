@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Vacancy Bay Area</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script type="text/javascript" src="/js/lib/dummy.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+
+  <style id="compiled-css" type="text/css">
+      
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 230px;
+        margin-top: 55px;
+        width: 250px;
+      }
+      #layerlist {
+        top: 0;
+        left: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #legend {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      height: 90px;
+      margin-bottom: 40px;
+      width: 70px;
+      }
+      .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+      }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+  <!-- Load the `mapbox-gl-geocoder` plugin. -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+<div id="map"></div>
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>ACS 2015-2019 Data</h2>
+    <p>5-year Census Data on Vacant Housing compiled between 2015 to 2019. Option 1: Breakdown of Vacant Housing as a ratio of all Vacant housing. Option 2: Breakdown of Vacant Housing as a ratio of Total Housing. </p>
+  </div>
+  <h3>
+  Topic:
+  </h3>
+  <select id='layerpicker' style = "width:200px;">
+    <option default="true" hidden="true">select</option>
+    <option disabled = "disabled">Percent of Vacant Housing By Type</option>
+    <option value="VacancyRate">Vacancy Rate (%)</option>
+    <option value="PerRentVac">For Rent (%)</option>
+    <option value="PerSaleVac">For Sale (%)</option>
+    <option value="PerRentNotVac">Rented, Not Occupied (%)</option>
+    <option value="PerSoldNotVac">Sold, Not Occupied (%)</option>
+    <option value="PerSeasonalVac">Seasonal & Vacation (%)</option>
+    <option value="PerMigrantVac">Migrant (%)</option>
+    <option value="PerOtherVac">Other (%)</option>
+    <option disabled = "disabled">Amount of Vacant Housing By Type</option>
+    <option value="Vacant">Total Vacant Units (#)</option>
+    <option value="ForRent">For Rent (#)</option>
+    <option value="ForSale">For Sale (#)</option>
+    <option value="RentNotOccupied">Rented, Not Occupied (#)</option>
+    <option value="SoldNotOccupied">Sold, Not Occupied (#)</option>
+    <option value="Seasonal">Seasonal & Vacation (#)</option>
+    <option value="Migrant">Migrant (#)</option>
+    <option value="Other">Other (#)</option>
+
+  </select>
+</div>
+<div class="map-overlay" id="legend"></div>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+		 let selectedLayer = 'select'
+
+      //create map
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/ckz681mn9001015r1fi29k24v', // map style URL from Mapbox Studio
+        center:[-122.425,37.761],
+        zoom: 11,
+      });
+    // Geocoder
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        })
+      );
+    //Scroll control
+      var nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, 'top-left');
+    
+      // map layers -- we iterate through these to turn them all off
+      let mapLayers = ['Vacant', 'Migrant', 'PerMigrantVac', 'Other', 'PerOtherVac', 'PerSoldNotVac', 'SoldNotOccupied', 'RentNotOccupied','PerRentNotVac', 'Seasonal', 'PerSeasonalVac', 'ForSale', 'PerSaleVac', 'ForRent', 'PerRentVac', 'VacancyRate']
+
+      subject = {"Vacant": "Total Vacant Homes: ",
+      "ForRent": "Vacant, For Rent: ",
+      "ForSale": "Vacant, For Sale: ",
+      "SoldNotOccupied": "Sold, Not Yet Occupied: ",
+      "RentNotOccupied": "Rented, Not Yet Occupied: ",
+      "Seasonal": "Seasonal Vacant Homes: ",
+      "Other": "Vacant For Other Reasons: ",
+      "Migrant": "Vacant Migrant Housing: ",
+      "VacancyRate" : "Vacancy Rate: ",
+      "PerRentVac": "Vacant, For Rent: ",
+      "PerSaleVac": "Vacant, For Sale: ",
+      "PerSoldNotVac": "Sold, Not Yet Occupied: ",
+      "PerRentNotVac": "Rented, Not Yet Occupied: ",
+      "PerSeasonalVac": "Seasonal Vacant Homes: ",
+      "PerOtherVac": "Vacant For Other Reasons: ",
+      "PerMigrantVac": "Vacant Migrant Housing: ",
+      "Vacant": "Total Vacant Homes: "
+    }
+
+      second = {"Vacant": "VacancyRate",
+      "ForRent": "PerRentHome",
+      "ForSale": "PerSaleHome",
+      "SoldNotOccupied": "PerSoldNotHome",
+      "RentNotOccupied": "PerRentNotHome",
+      "Seasonal": "PerSeasonalHome",
+      "Other": "PerOtherHome",
+      "Migrant": "PerMigrantHome",
+      "VacancyRate" : "Vacancy Rate: ",
+      "PerRentVac": "ForRent",
+      "PerSaleVac": "ForSale",
+      "PerSoldNotVac": "SoldNotOccupied",
+      "PerRentNotVac": "RentNotOccupied",
+      "PerSeasonalVac": "Seasonal",
+      "PerOtherVac": "Other",
+      "PerMigrantVac": "Migrant",
+      "Vacant" : "Vacant"}
+
+      // layer listener
+      const selectElement = document.querySelector('#layerpicker');
+
+      selectElement.addEventListener('change', (event) => {
+        console.log(event.target.value)
+        selectedLayer = event.target.value
+        mapLayers.forEach(l => map.setLayoutProperty(l, "visibility", "none"))
+        map.setLayoutProperty(event.target.value, "visibility", "visible")
+      });
+      count = {
+        "075" : "San Francisco County",
+        "081" : "San Mateo County",
+        "041" : "Marin County",
+        "097" : "Sonoma County",
+        "055" : "Napa County",
+        "095" : "Solano County",
+        "013" : "Contra Costa County",
+        "085" : "Santa Clara County",
+        "001" : "Alameda County",
+      }
+
+        // define layer names
+        var layers_t = [
+        	'>400',
+          '300',
+          '200',
+          '100',
+          '0',
+        ];
+        var colors_t = [
+          '#93022c',
+          '#c21649',
+          '#fd316d',
+          '#fe92b2',
+          '#ffffff'
+        ];
+        // define layer names
+        var layers_p = [
+          '100%',
+          '75%',
+          '50%',
+          '25%',
+          '0%',
+        ];
+        var colors_p = [
+          '#fd316d',
+          '#fe6492',
+          '#fe94b3',
+          '#fec7d7',
+          '#fffefe',
+        ];
+
+        // create legend
+  for (i = 0; i < 5; i++) {
+    var layer = layers_p[i];
+    var color = colors_p[i];
+    var item = document.createElement('div');
+    var key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
+
+    var value = document.createElement('span');
+    value.innerHTML = layer;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+  }
+      // wait for map to load before adjusting it
+      map.on('load', function () {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+        // set map bounds to the continental US
+
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+
+        // change info window on hover
+        map.on('mousemove', function (e) {
+          var tracts = map.queryRenderedFeatures(e.point,{
+            layers: [selectedLayer]
+          });
+          if([selectedLayer] == 'Migrant' || [selectedLayer] == 'Other' || [selectedLayer] == 'Seasonal' || [selectedLayer] == 'ForSale' || [selectedLayer] == 'ForRent' || [selectedLayer] == 'RentNotOccupied' || [selectedLayer] == 'SoldNotOccupied' || [selectedLayer] == 'Vacant'){
+                for (i = 0; i < 5; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+                for (i = 0; i < 5; i++) {
+                var layer = layers_t[i];
+                var color = colors_t[i];
+                var item = document.createElement('div');
+                var key = document.createElement('span');
+                key.className = 'legend-key';
+                key.style.backgroundColor = color;
+
+                var value = document.createElement('span');
+                value.innerHTML = layer;
+                item.appendChild(key);
+                item.appendChild(value);
+                legend.appendChild(item);
+              }
+
+          }else{
+                for (i = 0; i < 5; i++) {
+                  legend.removeChild(legend.lastElementChild);
+                }
+                for (i = 0; i < 5; i++) {
+                var layer = layers_p[i];
+                var color = colors_p[i];
+                var item = document.createElement('div');
+                var key = document.createElement('span');
+                key.className = 'legend-key';
+                key.style.backgroundColor = color;
+
+                var value = document.createElement('span');
+                value.innerHTML = layer;
+                item.appendChild(key);
+                item.appendChild(value);
+                legend.appendChild(item);
+              }
+          }
+          if ([selectedLayer] == 'Migrant' || [selectedLayer] == 'Other' || [selectedLayer] == 'Seasonal' || [selectedLayer] == 'ForSale' || [selectedLayer] == 'ForRent' || [selectedLayer] == 'RentNotOccupied' || [selectedLayer] == 'SoldNotOccupied') {
+            document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              count[tracts[0]['properties']['COUNTYFP']] +
+              '</strong></h3>' + '<h3>' + tracts[0]['properties']['NAMELSAD'] + '</h3>' +
+              '<p>' + subject[selectedLayer] + 
+              tracts[0]['properties'][selectedLayer]+
+              '</p><p> Percent of Housing in Tract: ' +
+              tracts[0]['properties'][second[selectedLayer]] + '%';
+          }
+          else if([selectedLayer] == 'VacancyRate'){
+            document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              count[tracts[0]['properties']['COUNTYFP']] +
+              '</strong></h3>' + '<h3>' + tracts[0]['properties']['NAMELSAD'] + '</h3>' +
+              '<p>' + subject[selectedLayer] + 
+              tracts[0]['properties'][selectedLayer]+
+              '</p><p> Percent of Vacancies in Tract: 100%';
+          }
+          else if([selectedLayer] == 'Vacant'){
+            document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              count[tracts[0]['properties']['COUNTYFP']] +
+              '</strong></h3>' + '<h3>' + tracts[0]['properties']['NAMELSAD'] + '</h3>' +
+              '<p>' + subject[selectedLayer] + 
+              tracts[0]['properties'][selectedLayer]+
+              '</p><p> Percent of Housing in Tract: ' +
+              tracts[0]['properties']['VacancyRate'] + '%';        
+          }
+          else{
+            document.getElementById('pd').innerHTML =
+              '<h3><strong>' +
+              count[tracts[0]['properties']['COUNTYFP']] +
+              '</strong></h3>' + '<h3>' + tracts[0]['properties']['NAMELSAD'] + '</h3>' +
+              '<p>'+ subject[selectedLayer] + 
+              tracts[0]['properties'][second[selectedLayer]]+
+              '</p><p> Percent of Vacant Homes in Tract: ' +
+              tracts[0]['properties'][selectedLayer] + '%';
+          }
+        });
+      });
+    
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "oyq6pjae"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
+
