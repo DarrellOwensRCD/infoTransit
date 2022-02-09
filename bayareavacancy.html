@@ -189,6 +189,14 @@
       "PerOtherVac": "Other",
       "PerMigrantVac": "Migrant",
       "Vacant" : "Vacant"}
+	third = {
+      "PerForRentVac": "PerRentHome",
+      "PerForSaleVac": "PerSaleHome",
+      "PerSoldNotOccupiedVac": "PerSoldNotHome",
+      "PerRentNotOccupiedVac": "PerRentNotHome",
+      "PerSeasonalVac": "PerSeasonalHome",
+      "PerOtherVac": "PerOtherHome",
+      "PerMigrantVac": "PerMigrantHome"}
 
       // layer listener
       const selectElement = document.querySelector('#layerpicker');
@@ -380,7 +388,9 @@
               '</strong></h3>' + '<h3>' + tracts[0]['properties']['NAMELSAD'] + '</h3>' +
               '<p>'+ subject[selectedLayer] + 
               tracts[0]['properties'][second[selectedLayer]]+
-              '</p><p> Ratio of Vacant Homes in tract: ' +
+	      '</p><p><strong> Percent of total Homes in tract: '+
+              tracts[0]['properties'][third[selectedLayer]] + '%' + 
+              '</strong></p><p> Share of Vacant Homes in tract: ' +
               tracts[0]['properties'][selectedLayer] + '%';
           }
         });
