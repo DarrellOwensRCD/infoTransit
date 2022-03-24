@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>Census 2020 Rate of Change Map</title>
+  <title>Census 2020:Change Map</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
@@ -57,8 +57,8 @@
       }
       #features {
         top: 0;
-        height: 200px;
-        margin-top: 20px;
+        height: 180px;
+        margin-top: 55px;
         width: 250px;
       }
       #layerlist {
@@ -72,7 +72,7 @@
       padding: 10px;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
       line-height: 18px;
-      height: 110px;
+      height: 90px;
       margin-bottom: 40px;
       width: 70px;
       }
@@ -91,15 +91,15 @@
 
 </head>
 <body>
-    <div id="map"></div>
+  <!-- Load the `mapbox-gl-geocoder` plugin. -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+<div id="map"></div>
 <div class="map-overlay" id="features">
   <div id="pd">
     <h2>Census 2020 Rate of Change</h2>
-    <p>Select a neighborhood to see population, demographics and housing growth or decline by tract over the decade.</p>
+    <p>Select a neighborhood to see population, demographics and housing growth or decline from 2010 to 2020.</p>
   </div>
-  <h3>
-  Topic:
-  </h3>
   <select id='layerpicker'>
   <option> select</option>
     <option value="PopulationGrowth">Total Population (2020)</option>
@@ -133,8 +133,16 @@
 	center:[-122.264,37.812], //center over Oakland
         zoom: 8.86
       });
-	var nav = new mapboxgl.NavigationControl();
-	map.addControl(nav, 'top-left'); 
+      //Geocoder
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        })
+      );
+      //Navigation
+    	var nav = new mapboxgl.NavigationControl();
+    	map.addControl(nav, 'top-left'); 
       // map layers -- we iterate through these to turn them all off
       let mapLayers = ['WhitePopulationGrowth', 'LatinoPopulationGrowth', 'BlackPopulationGrowth', 'AsianPopulationGrowth', 'OtherPopulationGrowth', 'MultiracePopulationGrowth',"NativePopulationGrowth","PacificPopulationGrowth", 'HousingGrowth', 'VacantHomesGrowth',"PopulationGrowth",]
       // layer listener
@@ -161,14 +169,15 @@
         const highlightLayer = 'highlight-layer';
         map.addLayer({
           id: highlightLayer,
-          type: 'fill',
+          type: 'line',
           source: "composite",
-          "source-layer": "2020to2010CensusTracts-1ac5kz",
+          "source-layer": "CA2020CensusNetChange-3cu4y1",
           paint: {
-            'fill-color': 'hotpink',
-            'fill-opacity': 0.75,
+            'line-color': '#000000',
+            'line-width': 5,
+            'line-opacity' : 1
           },
-          filter: ['==','TRACTCE10',''],
+          filter: ['==','TRACTCE',''],
         });
 
         // define layer names
@@ -178,7 +187,6 @@
           '0',
           '-500',
           '-1000>',
-          'N/A',
         ];
         var colors = [
           '#01650c',
@@ -186,7 +194,6 @@
           '#ffffff',
           '#f50000',
           '#7e0101',
-          '#000000'
         ];
 
         // create legend
@@ -266,39 +273,28 @@
         "VacantHomesGrowth": "Vacant Housing Units (2010): ",
         "PopulationGrowth" : "Total Population (2010): "
         }
+
         // change info window on hover
         map.on('mousemove', function(e) {
           var tracts = map.queryRenderedFeatures(e.point, {
             layers: [selectedLayer]
           });
-          
-					if (tracts.length > 0 && [selectedLayer] == 'PopulationGrowth'){
+          map.setFilter(highlightLayer, ['==', 'TRACTCE', tracts[0].properties.TRACTCE]);
+					if (tracts.length > 0){
+              var decade10 = tracts[0]['properties'][lookuprace[selectedLayer]] - tracts[0]['properties'][lookupracenet[selectedLayer]]
               document.getElementById('pd').innerHTML =
               '<h3><strong>' +
-              tracts[0]['properties']['NAMELSAD10'] +
-              '</strong></h3>' +
-              '<p> 2020 Population: ' +
-              tracts[0]['properties']['Population20'] +
-              '</p> <p> Net Difference since 2010: ' +
-              tracts[0]['properties'][lookupracenet[selectedLayer]] +
-              '</p><p>Percentage Increase/Decrease: ' +
-              tracts[0]['properties'][lookupracenetper[selectedLayer]];
-          }
-          if (tracts.length > 0) {
-            var decade10 = tracts[0]['properties'][lookuprace[selectedLayer]] - tracts[0]['properties'][lookupracenet[selectedLayer]]
-            document.getElementById('pd').innerHTML =
-              '<h3><strong>' +
-              tracts[0]['properties']['NAMELSAD10'] +
-              '</strong></h3>' +
-              '<p> '+ lookname[selectedLayer]+
+              tracts[0]['properties']['CountyName'] +
+              '</strong><br>' +              
+              '<strong>Census Tract: ' +
+              tracts[0]['properties']['TRACTCE'] +
+              '</strong></h3><p>' +
+              lookname[selectedLayer] + 
               tracts[0]['properties'][lookuprace[selectedLayer]] +
-              '</p><p> '+ lookname10[selectedLayer]+
-              decade10+
-              '</p><p> Net Difference since 2010: ' +
+              '</p><p>Difference since 2010: ' +
               tracts[0]['properties'][lookupracenet[selectedLayer]] +
-              '</p><p>Percentage Increase/Decrease: ' +
-              tracts[0]['properties'][lookupracenetper[selectedLayer]];
-            map.setFilter(highlightLayer, ['==', 'TRACTCE10', tracts[0].properties.TRACTCE10]);
+              ' (' +
+              tracts[0]['properties'][lookupracenetper[selectedLayer]] + '%)';
           }
         });
       });
