@@ -282,7 +282,14 @@
           map.setFilter(highlightLayer, ['==', 'TRACTCE', tracts[0].properties.TRACTCE]);
 					if (tracts.length > 0){
               var decade10 = tracts[0]['properties'][lookuprace[selectedLayer]] - tracts[0]['properties'][lookupracenet[selectedLayer]]
-              document.getElementById('pd').innerHTML =
+                    plus = ''
+		    if (tracts[0]['properties'][lookupracenet[selectedLayer]]> 0){
+			plus = '+'
+		    }
+		    else{
+			plus = ''
+		    }
+	      document.getElementById('pd').innerHTML =
               '<h3><strong>' +
               tracts[0]['properties']['CountyName'] +
               '</strong><br>' +              
@@ -291,9 +298,9 @@
               '</strong></h3><p>' +
               lookname[selectedLayer] + 
               tracts[0]['properties'][lookuprace[selectedLayer]] +
-              '</p><p>Difference since 2010: ' +
+              '</p><p>Difference since 2010: ' + plus +
               tracts[0]['properties'][lookupracenet[selectedLayer]] +
-              ' (' +
+              ' (' + plus +
               tracts[0]['properties'][lookupracenetper[selectedLayer]] + '%)';
           }
         });
