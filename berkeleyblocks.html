@@ -101,7 +101,6 @@
   </h3>
   <select id='layerpicker'>
     <option>select</option>
-    <option value="PopulationNet">Population</option>
     <option value="AsianNet">Asian</option>
     <option value="BlackNet">Black</option>
     <option value="LatinoNet">Latino</option>
@@ -110,8 +109,6 @@
     <option value="Pacific IslanderNet">Pacific Islander</option>
     <option value="OtherNet">Other Race</option>
     <option value="WhiteNet">White</option>
-    <option value="HomesNet">Homes</option>
-    <option value="VacantNet">Vacant</option>
   </select>
 </div>
 <div class="map-overlay" id="legend"></div>
@@ -127,7 +124,10 @@
       //create map
       var map = new mapboxgl.Map({
         container: 'map', // container id
-        style: 'mapbox://styles/idothethinking/cku65o3mq398c18nzushpiawf', // map style URL from Mapbox Studio
+        style: 'mapbox://styles/idothethinking/cl22kd6cl000514nydn2kb1t6', // map style URL from Mapbox Studio
+        center:[-122.269,37.873],
+        minZoom: 12.20,
+        zoom: 12,
       });
       
       
@@ -160,6 +160,41 @@
       'WhiteNet' : 'White',
       'HomesNet' : 'Homes',
       'VacantNet' : 'Vacant'
+      }
+      hood = {
+        "421100" : "Cragmont (north)",
+        "421200" : "Thousand Oaks (hills)",
+        "421300" : "Thousand Oaks & Northbrae",
+        "421400" : "Northbrae",
+        "421500" : "Cragmont",
+        "421600" : "La Loma Park",
+        "421700" : "North Shattuck",
+        "421800" : "Upper North Berkeley",
+        "421900" : "Westbrae",
+        "422000" : "Industrial West Berkeley",
+        "422100" : "Oceanview",
+        "422200" : "Northwest Berkeley.",
+        "422300" : "North Berkeley",
+        "422400" : "North Berkeley (east)",
+        "422500" : "Northside",
+        "422600" : "UC Campus",
+        "422700" : "Panoramic Hill",
+        "422800" : "Southside",
+        "422900" : "Downtown Berkeley",
+        "423000" : "Central Berkeley",
+        "423100" : "Poet's Corner",
+        "423200" : "West Berkeley (south)",
+        "423300" : "San Pablo Park",
+        "423400" : "South Berkeley",
+        "423500" : "South Berkeley - Adeline",
+        "423601" : "LeConte/Elmwood (north)",
+        "423602" : "LeConte/Elmwood (south)",
+        "423700" : "Claremont Court",
+        "423800" : "Claremont & Elmwood",
+        "423901" : "Lorin District (east)",
+        "423902" : "Bateman",
+        "424001" : "Lorin District (west)",
+        "424002" : "Southwest Berkeley - Harmon",
       }
       // layer listener
       const selectElement = document.querySelector('#layerpicker');
@@ -234,8 +269,8 @@
                 plus = ''
             }
             document.getElementById('pd').innerHTML =
-              '<h3><strong>Tract: ' +
-              tracts[0]['properties']['TRACTCE10'] + ' Block: ' +
+              '<h3><strong>' +
+              hood[tracts[0]['properties']['TRACTCE10']] + '<br>' +' Block ID: ' +
               tracts[0]['properties']['BLOCKCE10'] +
               '</strong></h3>' + '<p>' + group[selectedLayer] +
               ' (2020): ' +
