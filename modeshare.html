@@ -57,7 +57,7 @@
       }
       #features {
         top: 0;
-        height: 250px;
+        height: 290px;
         margin-top: 55px;
         width: 250px;
       }
@@ -100,14 +100,17 @@
     <h2>Commute Trips by Mode for census tracts in California. 5-year Census data from 2015 to 2019. Search a place, city or county above and select a mode below.</h2>
   </div>
   <select id='layerpicker'>
-    <option default="true" option value="Driving">Driving</option>
-    <option value="Biking">Cycling</option>
-    <option value="Walking">Walking</option>
-    <option value="Transit">All Public Transit</option>
+    <option default="true" option value="Driving">Cars</option>
+    <option value="Driving_Alone">Drive</option>
+    <option value="Driving_Carpool">Carpool</option>
+    <option value="Biking">Bikes</option>
+    <option value="Walking">Walk</option>
+    <option value="Transit">Public Transit</option>
     <option value="Bus">Buses</option>
     <option value="Ferry">Ferries</option>
     <option value="Train">Trains</option>
     <option value="Motorcycle">Motorcycle</option>
+    <option value="Taxi">Taxi Cab</option>
     <option value="WFH">Work From Home</option>
   </select>
 </div>
@@ -144,7 +147,7 @@
     
       // map layers -- we iterate through these to turn them all off
 
-      let mapLayers = ['WFH', 'Motorcycle','Train', 'Ferry', 'Bus', 'Transit', 'Biking', 'Walking', 'Driving'];
+      let mapLayers = ['WFH', 'Motorcycle','Train', 'Ferry', 'Bus', 'Transit', 'Biking', 'Walking', 'Driving', 'Driving_Alone', 'Driving_Carpool', 'Taxi'];
       // layer listener
       const selectElement = document.querySelector('#layerpicker');
 
@@ -188,8 +191,11 @@
           "Biking" : "Bike_Per",
           "Walking" : "Walk_Per",
           "Driving" : "Driving_Per",
+          "Driving_Alone" : "Driving_Alone_Per",
+          "Driving_Carpool" : "Driving_Carpool_Per",
           "Motorcycle" : "Motorcycle_Per",
-          "WFH" : "WFH_Per"
+          "WFH" : "WFH_Per",
+          "Taxi" : "Taxi_Per"
         };
         mode = {
           "Transit" : "ride transit to work",
@@ -198,9 +204,12 @@
           "Train" : "ride a train to work",
           "Biking" : "bike to work",
           "Walking" : "walk to work",
-          "Driving" : "drive to work",
+          "Driving" : "drive or carpool work",
+          "Driving_Alone" : "drive to work",
+          "Driving_Carpool" : "carpool to work",
           "WFH" : "work from home",
-          "Motorcycle" : "drive a motorcycle to work"
+          "Motorcycle" : "drive a motorcycle to work",
+          "Taxi" : " ride a taxi cab to work"
         };
         county = {
           1 : "Alameda County",
@@ -303,7 +312,7 @@
         //flag 
         var flag = 1;
         var a,b,c,d,e,f,g;
-        var data;
+        var data, DR, DC;
         var workers;
         // change info window on hover
         map.on('mousemove', function (e) {
@@ -332,7 +341,7 @@
             if(tracts[0]['properties']['Workers'] > 0){
                 workers = tracts[0]['properties']['Workers'];
             }
-            if(selectedLayer == 'Driving'){
+            if(selectedLayer == 'Driving' || selectedLayer == 'Driving_Alone'){
                  if(flag == 0){
                     for (i = 0; i < layers_2.length; i++) {
                         legend.removeChild(legend.lastElementChild);
@@ -397,11 +406,21 @@
             else{
                  if(tracts[0]['properties']['Workers'] == 0){
                   data = 0;
+                  DR = 0;
+                  DC = 0;
                  }
                  else{
                   data = tracts[0]['properties'][per[selectedLayer]];
+
+                  DR = (tracts[0]['properties']["Driving_Alone_Ratio"] * 100).toFixed(1);
+                  DC = (tracts[0]['properties']["Driving_Carpool_Ratio"] * 100).toFixed(1);
                  }
-                document.getElementById('pd').innerHTML = '<h3><strong>' + county[parseInt(tracts[0]['properties']['COUNTYFP'])] + '  Tract: ' + tracts[0]['properties']['TRACTCE'] + '<br>' + "Employed (+16): "+ nf.format(workers) +'<br><em>' +((data * 100).toFixed(1)) + "% "+ mode[selectedLayer] +"</em></h3></strong>" + "<p>Share of Residential Buildings:<br>" + "1-Unit: " + a + " %<br>" + "2-Unit: " + b + " %<br>" + "3-4 Unit: " + c + " %<br>" +  "5-9 Unit: " +  d + " %<br>" + "10-19 Unit: " + e +  " %<br>" + "20-49 Unit: " +  f + " %<br>" + ">49 Unit: " + g + " %</p>";
+                  if(selectedLayer == 'Driving'){
+                  document.getElementById('pd').innerHTML = '<h3><strong>' + county[parseInt(tracts[0]['properties']['COUNTYFP'])] + '  Tract: ' + tracts[0]['properties']['TRACTCE'] + '<br>' + "Employed (+16): "+ nf.format(workers) +'<br><em>' +((data * 100).toFixed(1)) + "% "+ mode[selectedLayer] +"</em></h3></strong>" + "<p>Ratio of Car Travel: <br> Driving Themselves: " + DR + "%<br>Carpooling: " + DC+ "%<br>Density of Residential Buildings:<br>" + "1-Unit: " + a + " %<br>" + "2-Unit: " + b + " %<br>" + "3-4 Unit: " + c + " %<br>" +  "5-9 Unit: " +  d + " %<br>" + "10-19 Unit: " + e +  " %<br>" + "20-49 Unit: " +  f + " %<br>" + ">49 Unit: " + g + " %</p>";
+                  }
+                  else{
+                  document.getElementById('pd').innerHTML = '<h3><strong>' + county[parseInt(tracts[0]['properties']['COUNTYFP'])] + '  Tract: ' + tracts[0]['properties']['TRACTCE'] + '<br>' + "Employed (+16): "+ nf.format(workers) +'<br><em>' +((data * 100).toFixed(1)) + "% "+ mode[selectedLayer] +"</em></h3></strong>" + "<p>Density of Residential Buildings:<br>" + "1-Unit: " + a + " %<br>" + "2-Unit: " + b + " %<br>" + "3-4 Unit: " + c + " %<br>" +  "5-9 Unit: " +  d + " %<br>" + "10-19 Unit: " + e +  " %<br>" + "20-49 Unit: " +  f + " %<br>" + ">49 Unit: " + g + " %</p>";
+                }
             }
           }
         });
