@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>California Commuter Modeshare: 2015-2019 ACS</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+  <style id="compiled-css" type="text/css">
+      
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 250px;
+        margin-top: 55px;
+        width: 250px;
+      }
+      #layerlist {
+        top: 0;
+        left: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #legend {
+      padding: 10px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 18px;
+      height: 80px;
+      margin-bottom: 40px;
+      width: 70px;
+      }
+      .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+      }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+  <!-- Load the `mapbox-gl-geocoder` plugin. -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <div id="map"></div>
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>Commute Trips by Mode for census tracts in California. 5-year Census data from 2015 to 2019. Search a place, city or county above and select a mode below.</h2>
+  </div>
+  <select id='layerpicker'>
+    <option default="true" option value="Driving">Driving</option>
+    <option value="Biking">Cycling</option>
+    <option value="Walking">Walking</option>
+    <option value="Transit">All Public Transit</option>
+    <option value="Bus">Buses</option>
+    <option value="Ferry">Ferries</option>
+    <option value="Train">Trains</option>
+    <option value="Motorcycle">Motorcycle</option>
+    <option value="WFH">Work From Home</option>
+  </select>
+</div>
+<div class="map-overlay" id="legend"></div>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+     let selectedLayer = 'Driving';
+
+      //create map
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/cl4knvr9x000314rskp7ukv45', // map style URL from Mapbox Studio
+        center:[-122.269,37.873],
+        minZoom: 8.05,
+        zoom: 10,
+      });
+            //This will add commas to the number format
+      const nf = new Intl.NumberFormat();
+    // Geocoder
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        })
+      );
+      
+      var nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, 'top-left');
+    
+      // map layers -- we iterate through these to turn them all off
+
+      let mapLayers = ['WFH', 'Motorcycle','Train', 'Ferry', 'Bus', 'Transit', 'Biking', 'Walking', 'Driving'];
+      // layer listener
+      const selectElement = document.querySelector('#layerpicker');
+
+      selectElement.addEventListener('change', (event) => {
+        console.log(event.target.value)
+        selectedLayer = event.target.value
+        mapLayers.forEach(l => map.setLayoutProperty(l, "visibility", "none"))
+        map.setLayoutProperty(event.target.value, "visibility", "visible")
+      });
+
+        // define layer names
+        var layers_2 = [
+          '0%',
+          '12%',
+          '25%',
+          '50%'
+        ];
+        var colors_1 = [
+          '#0ea800',
+          '#ffffff',
+          '#fed42a',
+          '#f40101'
+        ];
+        var layers_1 = [
+          '0%',
+          '25%',
+          '50%',
+          '>75%',
+        ];
+        var colors_2 = [
+          '#ffffff',
+          '#fed42a',
+          '#49b540',
+          '#064200'
+        ];
+        per = {
+          "Transit" : "Transit_Per",
+          "Ferry" : "Ferry_Per",
+          "Bus" : "Bus_Per",
+          "Train" : "Rail_Per",
+          "Biking" : "Bike_Per",
+          "Walking" : "Walk_Per",
+          "Driving" : "Driving_Per",
+          "Motorcycle" : "Motorcycle_Per",
+          "WFH" : "WFH_Per"
+        };
+        mode = {
+          "Transit" : "ride transit to work",
+          "Ferry" : "ride a ferry to work",
+          "Bus" : "ride a bus to work",
+          "Train" : "ride a train to work",
+          "Biking" : "bike to work",
+          "Walking" : "walk to work",
+          "Driving" : "drive to work",
+          "WFH" : "work from home",
+          "Motorcycle" : "drive a motorcycle to work"
+        };
+        county = {
+          1 : "Alameda County",
+          3 : "Alpine County",
+          5 : "Amador County",
+          7 : "Butte County",
+          9 : "Calaveras County",
+          11  : "Colusa County",
+          13  : "Contra Costa County",
+          15  : "Del Norte County",
+          17  : "El Dorado County",
+          19  : "Fresno County",
+          21  : "Glenn County",
+          23 : " Humboldt County",
+          25  : "Imperial County",
+          27  : "Inyo County",
+          29  : "Kern County",
+          31  : "Kings County",
+          33  : "Lake County",
+          35  : "Lassen County",
+          37  : "Los Angeles County",
+          39  : "Madera County",
+          41  : "Marin County",
+          43  : "Mariposa County",
+          45  : "Mendocino County",
+          47  : "Merced County",
+          49  : "Modoc County",
+          51  : "Mono County",
+          53  : "Monterey County",
+          55  : "Napa County",
+          57  : "Nevada County",
+          59  : "Orange County",
+          61  : "Placer County",
+          63  : "Plumas County",
+          65  : "Riverside County",
+          67  : "Sacramento County",
+          69  : "San Benito County",
+          71  : "San Bernardino County",
+          73  : "San Diego County",
+          75  : "San Francisco",
+          77  : "San Joaquin County",
+          79  : "San Luis Obispo County",
+          81  : "San Mateo County",
+          83  : "Santa Barbara County",
+          85  : "Santa Clara County",
+          87  : "Santa Cruz County",
+          89  : "Shasta County",
+          91  : "Sierra County",
+          93  : "Siskiyou County",
+          95  : "Solano County",
+          97  : "Sonoma County",
+          99  : "Stanislaus County",
+          101 : "Sutter County",
+          103 : "Tehama County",
+          105 : "Trinity County",
+          107 : "Tulare County",
+          109 : "Tuolumne County",
+          111 : "Ventura County",
+          113 : "Yolo County",
+          115 : "Yuba County"
+        };
+        // create legend
+  for (i = 0; i < layers_1.length; i++) {
+    var layer = layers_1[i];
+    var color = colors_1[i];
+    var item = document.createElement('div');
+    var key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
+
+    var value = document.createElement('span');
+    value.innerHTML = layer;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+  }
+      // wait for map to load before adjusting it
+      map.on('load', function () {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+        // set map bounds to the continental US
+
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+        //Hover effect
+        const highlightLayer = 'highlight-layer';
+        map.addLayer({
+          id: highlightLayer,
+          type: 'line',
+          source: "composite",
+          "source-layer": "CommuteAnalysis-1ssifi",
+          paint: {
+            'line-color': '#000000',
+            'line-width': 5,
+            'line-opacity' : 1
+          },
+          filter: ['==','GISJOIN',''],
+        });
+        //flag 
+        var flag = 1;
+        var a,b,c,d,e,f,g;
+        var data;
+        // change info window on hover
+        map.on('mousemove', function (e) {
+          var tracts = map.queryRenderedFeatures(e.point,{
+            layers: [selectedLayer]
+          });
+          map.setFilter(highlightLayer, ['==', 'GISJOIN', tracts[0]['properties']['GISJOIN']]);
+          if (tracts.length > 0 ) {
+                a = 0;
+                b = 0;
+                c = 0;
+                d = 0;
+                e = 0;
+                f = 0;
+                g = 0;
+            if(tracts[0]['properties']['Homes'] > 0){
+                 a = ((tracts[0]['properties']['SFH_per'] * 100).toFixed(1));
+                 b = ((tracts[0]['properties']['2_per'] * 100).toFixed(1));
+                 c = ((tracts[0]['properties']['3_per'] * 100).toFixed(1));
+                 d = ((tracts[0]['properties']['5_per'] * 100).toFixed(1));
+                 e = ((tracts[0]['properties']['10_per'] * 100).toFixed(1));
+                 f = ((tracts[0]['properties']['20_per'] * 100).toFixed(1));
+                 g = ((tracts[0]['properties']['50_per'] * 100).toFixed(1));
+            }
+            if(selectedLayer == 'Driving'){
+                 if(flag == 0){
+                    for (i = 0; i < layers_2.length; i++) {
+                        legend.removeChild(legend.lastElementChild);
+                      }
+                    for (i = 0; i < layers_1.length; i++) {
+                      var layer = layers_1[i];
+                      var color = colors_1[i];
+                      var item = document.createElement('div');
+                      var key = document.createElement('span');
+                      key.className = 'legend-key';
+                      key.style.backgroundColor = color;
+
+                      var value = document.createElement('span');
+                      value.innerHTML = layer;
+                      item.appendChild(key);
+                      item.appendChild(value);
+                      legend.appendChild(item);
+                    }  
+                    flag = 1;
+                 }
+            }
+            else{
+                if(flag == 1){
+                    for (i = 0; i < layers_1.length; i++) {
+                        legend.removeChild(legend.lastElementChild);
+                      }
+                    for (i = 0; i < layers_2.length; i++) {
+                      var layer = layers_2[i];
+                      var color = colors_2[i];
+                      var item = document.createElement('div');
+                      var key = document.createElement('span');
+                      key.className = 'legend-key';
+                      key.style.backgroundColor = color;
+
+                      var value = document.createElement('span');
+                      value.innerHTML = layer;
+                      item.appendChild(key);
+                      item.appendChild(value);
+                      legend.appendChild(item);
+                    }  
+                    flag = 0;
+                }
+            }
+            if(selectedLayer == 'Transit'){
+                 var bu = ((tracts[0]['properties']['Transit_Bus_Ratio'] * 100).toFixed(1) );
+                 var tr = ((tracts[0]['properties']['Transit_Rail_Ratio'] * 100).toFixed(1) );
+                 var fe = ((tracts[0]['properties']['Transit_Ferry_Ratio'] * 100).toFixed(1) );
+                 if(tracts[0]['properties']['Transit'] == 0){
+                  bu = 0;
+                  tr = 0;
+                  fe = 0;
+                 }
+                 if(tracts[0]['properties']['Workers'] == 0){
+                  data = 0;
+                 }
+                 else{
+                  data = tracts[0]['properties']['Transit_Per'];
+                 }
+                document.getElementById('pd').innerHTML = '<h3><strong>' + county[parseInt(tracts[0]['properties']['COUNTYFP'])] + '<br>Tract: ' + tracts[0]['properties']['TRACTCE'] + '<br><em>' 
+               + ((data * 100)).toFixed(1) + "% " + mode[selectedLayer] +"</em></h3></strong><p>Ratio of Transit Riders: <br>"+ bu + "% by bus<br>" + tr + "%  by train<br>" + fe + "% by ferry</p>" + "<p>Share of Residential Buildings:<br>" + "1-Unit: " + a + " %<br>" + "2-Unit: " + b + " %<br>" + "3-4 Unit: " + c + " %<br>" +  "5-9 Unit: " +  d + " %<br>" + "10-19 Unit: " + e +  " %<br>" + "20-49 Unit: " +  f + " %<br>" + ">49 Unit: " + g + " %</p>";;
+            }
+            else{
+                 if(tracts[0]['properties']['Workers'] == 0){
+                  data = 0;
+                 }
+                 else{
+                  data = tracts[0]['properties'][per[selectedLayer]];
+                 }
+                document.getElementById('pd').innerHTML = '<h3><strong>' + county[parseInt(tracts[0]['properties']['COUNTYFP'])] + '<br> Tract: ' + tracts[0]['properties']['TRACTCE'] + '<br><em>' +((data * 100).toFixed(1)) + "% "+ mode[selectedLayer] +"</em></h3></strong>" + "<p>Share of Residential Buildings:<br>" + "1-Unit: " + a + " %<br>" + "2-Unit: " + b + " %<br>" + "3-4 Unit: " + c + " %<br>" +  "5-9 Unit: " +  d + " %<br>" + "10-19 Unit: " + e +  " %<br>" + "20-49 Unit: " +  f + " %<br>" + ">49 Unit: " + g + " %</p>";
+            }
+          }
+        });
+      });
+    
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "oyq6pjae"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
+
