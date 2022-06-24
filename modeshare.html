@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>California Commuter Modeshare: 2015-2019 ACS</title>
+  <title>Commuter Modeshare: 2015-2019 ACS</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
@@ -97,7 +97,7 @@
     <div id="map"></div>
 <div class="map-overlay" id="features">
   <div id="pd">
-    <h2>Commute Trips by Mode for census tracts in California from 2015 to 2019 based on where workers live. Search a place above and select a mode below for how a neighborhood commutes to work.</h2>
+    <h2>Commute Trips by Mode for census tracts in CA, NY, NJ, PA, MD, & CT from 2015 to 2019 based on where workers live. Search a place above and select a mode below for how a neighborhood commutes to work.</h2>
   </div>
   <select id='layerpicker'>
     <option default="true" option value="Driving">Cars</option>
@@ -400,7 +400,7 @@
                  else{
                   data = tracts[0]['properties']['Transit_Per'];
                  }
-                document.getElementById('pd').innerHTML = '<h3><strong>' + county[parseInt(tracts[0]['properties']['COUNTYFP'])] + ' Tract: ' + tracts[0]['properties']['TRACTCE'] + '<br>' + "Employed (+16): "+ nf.format(workers) +'<br><em>' 
+                document.getElementById('pd').innerHTML = '<h3><strong>' + tracts[0]['properties']['County_Name'] + ", " + tracts[0]['properties']['State_Abbr'] ' Tract: ' + tracts[0]['properties']['TRACTCE'] + '<br>' + "Employed (+16): "+ nf.format(workers) +'<br><em>' 
                + ((data * 100)).toFixed(1) + "% " + mode[selectedLayer] +"</em></h3></strong><p>Ratio of Transit Riders: <br>"+ bu + "% by bus<br>" + tr + "%  by train<br>" + fe + "% by ferry</p>" + "<p>Share of Residential Buildings:<br>" + "1-Unit: " + a + " %<br>" + "2-Unit: " + b + " %<br>" + "3-4 Unit: " + c + " %<br>" +  "5-9 Unit: " +  d + " %<br>" + "10-19 Unit: " + e +  " %<br>" + "20-49 Unit: " +  f + " %<br>" + ">49 Unit: " + g + " %</p>";;
             }
             else{
