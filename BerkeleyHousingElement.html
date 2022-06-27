@@ -200,7 +200,7 @@
               }
               else{
                if(tracts[0]['properties']['Projected_Units'] == null && tracts[0]['properties']['type'] == 2){
-                  document.getElementById('pd').innerHTML = '<h3><strong>' + tracts[0]['properties']['SitusStree']+ " "+ tracts[0]['properties']['SitusStr_1'] + ", " + tracts[0]['properties']['SitusZip'] + '</h3><p>APN: ' + tracts[0]['properties']['APN_SORT'] + '<br>Status: ' + type[tracts[0]['properties']['type']] + "<br>Additional data Was Not Made Available by the Planning Department</strong></p>";
+                  document.getElementById('pd').innerHTML = '<h3><strong>' + tracts[0]['properties']['SitusStree']+ " "+ tracts[0]['properties']['SitusStr_1'] + ", " + tracts[0]['properties']['SitusZip'] + '</h3><p>APN: ' + tracts[0]['properties']['APN_SORT'] + '<br>Status: ' + type[tracts[0]['properties']['type']] + "<br><br>Additional data Was Not Made Available by the Planning Department</strong></p>";
                 }
                 else{
                   if(tracts[0]['properties']['SitusStree'] == null){
