@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>2023 Berkeley Housing Element Proposed</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+  <style id="compiled-css" type="text/css">
+      
+      
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 200px;
+        margin-top: 55px;
+        width: 250px;
+      }
+      #layerlist {
+        top: 0;
+        left: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+      #legend {
+        padding: 10px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        line-height: 18px;
+        height: 60px;
+        margin-bottom: 40px;
+        width: 150px;
+      }
+      .legend-key {
+        display: inline-block;
+        border-radius: 20%;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+      }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+  <!-- Load the `mapbox-gl-geocoder` plugin. -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <div id="map"></div>
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>Berkeley's Housing Element for 2023</h2>
+    <h3> Red: New sites claimed feasible for housing with unit and income counts <br>Orange: Desire to develop has been stated <br>Green: Approved or undergoing approval</h3>
+  </div>
+</div>
+<div class="map-overlay" id="legend"></div>
+
+    <script type="text/javascript">//<![CDATA[
+
+
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+      //create map
+      let selectedLayer = 'berkeleyhousingelement-djqypu';
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/cl4ufxtzf000214rv3aa3agbj', // map style URL from Mapbox Studio
+        center:[-122.270,37.876],
+        minZoom: 12,
+        zoom: 12.51,
+      });
+      // Sataelite on and Off
+    // Geocoder
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        })
+      );      
+      
+      var nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, 'top-left');
+    
+      // map layers -- we iterate through these to turn them all off
+      // layer listener
+
+        // define layer names
+        type = {
+          0 : "Housing Likely To Be Developed",
+          1 : "Housing Development Permitted Or Under Review",
+          2 : "Proposed For Future Housing"
+        }
+        var layers = [
+          'Opportunity Sites',
+          'Pipeline Sites',
+          'Likely Sites'
+        ];
+        var colors = [
+          '#f20202',
+          '#0dd402',
+          '#f19604'
+        ];
+
+        // create legend
+      for (i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        var color = colors[i];
+        var item = document.createElement('div');
+        var key = document.createElement('span');
+        key.className = 'legend-key';
+        key.style.backgroundColor = color;
+
+        var value = document.createElement('span');
+        value.innerHTML = layer;
+        item.appendChild(key);
+        item.appendChild(value);
+        legend.appendChild(item);
+      }
+      // wait for map to load before adjusting it
+      map.on('load', function () {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+
+        // set map bounds to the continental US
+
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+        const highlightLayer = 'highlight-layer';
+        map.addLayer({
+          id: highlightLayer,
+          type: 'line',
+          source: "composite",
+          "source-layer": "BerkeleyHousingElement-djqypu",
+          paint: {
+            'line-color': '#FFFFFF',
+            'line-width': 5,
+            'line-opacity' : 1
+          },
+          filter: ['==','APN_SORT',''],
+        });
+
+        // change info window on hover
+        map.on('mousemove', function (e) {
+          var tracts = map.queryRenderedFeatures(e.point,{
+            layers: [selectedLayer]
+          });
+          map.setFilter(highlightLayer, ['==', 'APN_SORT', tracts[0].properties.APN_SORT]);
+          if (tracts.length > 0 ) {
+              if(tracts[0]['properties']['SitusStree'] == null && tracts[0]['properties']['SitusStr_1'] == null){
+                  document.getElementById('pd').innerHTML = '<h3><strong>Data Was Not Made Available by the Planning Department</h3></strong>';
+              }
+              else{
+                if(tracts[0]['properties']['SitusStree'] == null){
+                  tracts[0]['properties']['SitusStree'] = "";
+                }
+                if(tracts[0]['properties']['type'] == 2){
+                document.getElementById('pd').innerHTML = '<h3><strong>' + tracts[0]['properties']['SitusStree']+ " "+ tracts[0]['properties']['SitusStr_1'] + ", " + tracts[0]['properties']['SitusZip'] + '</h3><p>APN: ' + tracts[0]['properties']['APN_SORT'] + "<br><u>Homes Claimed Feasible: " + tracts[0]['properties']['Projected_Units'] + "</u><br>Below 80% AMI: " +tracts[0]['properties']['<80AMI']+ "<br>80 - 120% AMI: " + tracts[0]['properties']['80-120AMI']+"<br>Above 120% AMI: " + tracts[0]['properties']['>120AMI'] + '<br>FAR: ' + tracts[0]['properties']['FAR']+ '<br> Zoning: ' + tracts[0]['properties']['Zoning'] + '<br>Status: ' + type[tracts[0]['properties']['type']]+ '</p>';
+                }
+                else{
+                document.getElementById('pd').innerHTML = '<h3><strong>' + tracts[0]['properties']['SitusStree']+ " "+ tracts[0]['properties']['SitusStr_1'] + ", " + tracts[0]['properties']['SitusZip'] + '</h3><p>APN: ' + tracts[0]['properties']['APN_SORT'] + '<br>Status: ' + type[tracts[0]['properties']['type']]+ '</p></strong>' ;
+              }
+          }
+          }
+        });
+      });
+    
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "oyq6pjae"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
+
