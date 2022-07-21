@@ -228,6 +228,7 @@
           });
 
           if (tracts.length > 0 ) {
+		var change = Math.round(100 *tracts[0]['properties'][net_topic[selectedLayer]] / (tracts[0]['properties'][topic[selectedLayer]] -  tracts[0]['properties'][net_topic[selectedLayer]])); 
             document.getElementById('pd').innerHTML =
               '<h3><strong>' +
               tracts[0]['properties']['NAMELSAD'] +
@@ -237,7 +238,7 @@
               '</p> <p>' + subject[selectedLayer] + ': ' +
               tracts[0]['properties'][topic[selectedLayer]]+
               '</p><p> Net Difference since 2010: ' +
-              tracts[0]['properties'][net_topic[selectedLayer]];
+              tracts[0]['properties'][net_topic[selectedLayer]] + ' (' + change +'%';
           }
         });
       });
