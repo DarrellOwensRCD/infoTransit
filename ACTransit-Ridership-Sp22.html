@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>AC Transit Ridership Map</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+    type="text/javascript"
+    src="/js/lib/dummy.js"
+    
+  ></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+      <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+  <style id="compiled-css" type="text/css">
+      
+      
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+      }
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+      #features {
+        top: 0;
+        height: 230px;
+        margin-top: 55px;
+        width: 250px;
+      }
+      #layerlist {
+        top: 0;
+        left: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 250px;
+      }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+  <!-- Load the `mapbox-gl-geocoder` plugin. -->
+  <!-- Load the `mapbox-gl-geocoder` plugin. -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <div id="map"></div>
+<div class="map-overlay" id="features">
+  <div id="pd">
+    <h2>AC Transit average ridership per stop between March and June of 2022</h2>
+  </div>
+  <h4>
+  Lines:
+  </h4>
+  <select id='layerpicker'>
+    <option default="true" option value="1-line">1 - TEMPO</option>
+    <option value=6-line>6</option>
+    <option value=7-line>7</option>
+    <option value=10-line>10</option>
+    <option value=12-line>12</option>
+    <option value=14-line>14</option>
+    <option value=18-line>18</option>
+    <option value=19-line>19</option>
+    <option value=20-line>20</option>
+    <option value=21-line>21</option>
+    <option value=28-line>28</option>
+    <option value=29-line>29</option>
+    <option value=33-line>33</option>
+    <option value=34-line>34</option>
+    <option value=35-line>35</option>
+    <option value=36-line>36</option>
+    <option value=39-line>39</option>
+    <option value=40l-line>40</option>
+    <option value=41-line>41</option>
+    <option value=45-line>45</option>
+    <option value=51a-line>51A</option>
+    <option value=51b-line>51B</option>
+    <option value=52l-line>52</option>
+    <option value=54-line>54</option>
+    <option value=56-line>56</option>
+    <option value=57-line>57</option>
+    <option value=60-line>60</option>
+    <option value=62-line>62</option>
+    <option value=65-line>65</option>
+    <option value=67-line>67</option>
+    <option value=70-line>70</option>
+    <option value=71-line>71</option>
+    <option value=72-line>72</option>
+    <option value=72m-line>72M</option>
+    <option value=72r-line>72R</option>
+    <option value=73-line>73</option>
+    <option value=74-line>74</option>
+    <option value=76-line>76</option>
+    <option value=78-line>78</option>
+    <option value=79-line>79</option>
+    <option value=86-line>86</option>
+    <option value=88-line>88</option>
+    <option value=90-line>90</option>
+    <option value=93-line>93</option>
+    <option value=95-line>95</option>
+    <option value=96-line>96</option>
+    <option value=97-line>97</option>
+    <option value=98-line>98</option>
+    <option value=99-line>99</option>
+    <option value=db-line>DB</option>
+    <option value=db1-line>DB1</option>
+    <option value=e-line>E</option>
+    <option value=f-line>F</option>
+    <option value=fs-line>FS</option>
+    <option value=g-line>G</option>
+    <option value=j-line>J</option>
+    <option value=l-line>L</option>
+    <option value=la-line>LA</option>
+    <option value=nl-line>NL</option>
+    <option value=nx-line>NX</option>
+    <option value=nx3-line>NX3</option>
+    <option value=o-line>O</option>
+    <option value=ox-line>OX</option>
+    <option value=p-line>P</option>
+    <option value=u-line>U</option>
+    <option value=v-line>V</option>
+    <option value=w-line>W</option>
+    <option value=200-line>200</option>
+    <option value=210-line>210</option>
+    <option value=212-line>212</option>
+    <option value=215-line>215</option>
+    <option value=216-line>216</option>
+    <option value=217-line>217</option>
+    <option value=232-line>232</option>
+    <option value=239-line>239</option>
+    <option value=251-line>251</option>
+    <option value=346-line>346</option>
+    <option value=376-line>376</option>
+    <option value=604-line>604</option>
+    <option value=605-line>605</option>
+    <option value=606-line>606</option>
+    <option value=607-line>607</option>
+    <option value=611-line>611</option>
+    <option value=617-line>617</option>
+    <option value=620-line>620</option>
+    <option value=621-line>621</option>
+    <option value=623-line>623</option>
+    <option value=624-line>624</option>
+    <option value=625-line>625</option>
+    <option value=626-line>626</option>
+    <option value=628-line>628</option>
+    <option value=629-line>629</option>
+    <option value=631-line>631</option>
+    <option value=638-line>638</option>
+    <option value=642-line>642</option>
+    <option value=646-line>646</option>
+    <option value=648-line>648</option>
+    <option value=649-line>649</option>
+    <option value=650-line>650</option>
+    <option value=652-line>652</option>
+    <option value=653-line>653</option>
+    <option value=654-line>654</option>
+    <option value=655-line>655</option>
+    <option value=657-line>657</option>
+    <option value=658-line>658</option>
+    <option value=660-line>660</option>
+    <option value=662-line>662</option>
+    <option value=663-line>663</option>
+    <option value=667-line>667</option>
+    <option value=669-line>669</option>
+    <option value=671-line>671</option>
+    <option value=672-line>672</option>
+    <option value=675-line>675</option>
+    <option value=676-line>676</option>
+    <option value=677-line>677</option>
+    <option value=680-line>680</option>
+    <option value=681-line>681</option>
+    <option value=682-line>682</option>
+    <option value=684-line>684</option>
+    <option value=687-line>687</option>
+    <option value=688-line>688</option>
+    <option value=696-line>696</option>
+    <option value=701-line>701</option>
+    <option value=706-line>706</option>
+    <option value=800-line>800</option>
+    <option value=801-line>801</option>
+    <option value=802-line>802</option>
+    <option value=805-line>805</option>
+    <option value=840-line>840</option>
+    <option value=851-line>851</option>
+  </select>
+</div>
+<div class="map-overlay" id="legend"></div>
+
+    <script type="text/javascript">//<![CDATA[
+      // define access token
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+      //create map
+      let selectedLayer = '1-line';
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/cl64fwr88000d14nyygm1bvgq', // map style URL from Mapbox Studio
+        center:[-122.199,37.790],
+        zoom: 10.14,
+      });
+    // Geocoder
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl
+        })
+      );      
+      
+      var nav = new mapboxgl.NavigationControl();
+      map.addControl(nav, 'top-left');
+          // wait for map to load before adjusting it
+      let mapLayers = [ "1-line","6-line", "7-line", "10-line", "12-line", "14-line", "18-line", "19-line", "20-line", "21-line", "28-line", "29-line", "33-line", "34-line", "35-line", "36-line", "39-line", "41-line", "45-line", "54-line", "56-line", "57-line", "60-line", "62-line", "65-line", "67-line", "70-line", "71-line", "72-line", "73-line", "74-line", "76-line", "78-line", "79-line", "86-line", "88-line", "90-line", "93-line", "95-line", "96-line", "97-line", "98-line", "99-line", "200-line", "210-line", "212-line", "215-line", "216-line", "217-line", "232-line", "239-line", "251-line", "346-line", "376-line", "604-line", "605-line", "606-line", "607-line", "611-line", "617-line", "620-line", "621-line", "623-line", "624-line", "625-line", "626-line", "628-line", "629-line", "631-line", "638-line", "642-line", "646-line", "648-line", "649-line", "650-line", "652-line", "653-line", "654-line", "655-line", "657-line", "658-line", "660-line", "662-line", "663-line", "667-line", "669-line", "671-line", "672-line", "675-line", "676-line", "677-line", "680-line", "681-line", "682-line", "684-line", "687-line", "688-line", "696-line", "701-line", "706-line", "800-line", "801-line", "802-line", "805-line", "840-line", "851-line", "40l-line", "51a-line", "51b-line", "52l-line", "72m-line", "72r-line", "db-line", "db1-line", "e-line", "f-line", "fs-line", "g-line", "j-line", "l-line", "la-line", "nl-line", "nx-line", "nx3-line", "o-line", "ox-line", "p-line", "u-line", "v-line", "w-line",  "Routes"]
+      // layer listener
+      const selectElement = document.querySelector('#layerpicker');
+
+      selectElement.addEventListener('change', (event) => {
+        console.log(event.target.value)
+        selectedLayer = event.target.value
+        mapLayers.forEach(l => map.setLayoutProperty(l, "visibility", "none"))
+        map.setLayoutProperty(event.target.value, "visibility", "visible")
+        if(event.target.value == '1-line'){
+          console.log((event.target.value.replace("-line", "")).toUpperCase());
+          map.setFilter('Routes', ['==', 'PUB_RTE', "1T"]);
+        }
+        else if(event.target.value == '40l-line'){
+          map.setFilter('Routes', ['==', 'PUB_RTE', "40"]);
+        }
+        else if(event.target.value == '52l-line'){
+          map.setFilter('Routes', ['==', 'PUB_RTE', "52"]);
+        }
+        else{
+          console.log((event.target.value.replace("-line", "")).toUpperCase());
+          map.setFilter('Routes', ['==', 'PUB_RTE', (event.target.value.replace("-line", "")).toUpperCase()]);
+        }
+        map.setLayoutProperty('Routes', "visibility", "visible")
+      });
+      map.on('load', function () {
+        // make a pointer cursor
+        map.getCanvas().style.cursor = 'default';
+        // change info window on hover
+        map.on('mousemove', function (e) {
+          var tracts = map.queryRenderedFeatures(e.point,{
+            layers: [selectedLayer]
+          });
+          if (tracts.length > 0) {
+            document.getElementById('pd').innerHTML =
+              '<h3><strong>' + tracts[0]['properties']['route_name'] + ': ' + tracts[0]['properties']['stop_name'] + '</h3></strong>'
+              + '<p>'  + tracts[0]['properties']['day'] + ' average - <i>' + tracts[0]['properties']['direction'] + '</i></p><p>Riders Boarding: ' + tracts[0]['properties']['onboard'] + '  (<i>' + tracts[0]['properties']['onboard_str']+ '</i>)<br>Riders Getting Off: ' + tracts[0]['properties']['offboard'] + '  (<i>' + tracts[0]['properties']['offboard_str']+  '</i>)</p>';
+          }
+        });
+      });
+    
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "oyq6pjae"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
