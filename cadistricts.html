@@ -57,7 +57,7 @@
       }
       #features {
         top: 0;
-        height: 90px;
+        height: 130px;
         margin-top: 20px;
         width: 240px;
       }
@@ -140,7 +140,7 @@
     	'Urban Areas'
     ];
     var colors = [
-      '#FF69B4'
+      '#808080'
     ];
       // create legend
       for (i = 0; i < layers.length; i++) {
@@ -176,9 +176,9 @@
           });
           if (tracts.length > 0) {
             document.getElementById('pd').innerHTML =
-              '<h2><strong>' + [selectedLayer] + " District " +
+              '<h3><strong>' + [selectedLayer] + '</h3></strong>'+ '<h2><strong>' +
               tracts[0]['properties']['NAME'] + '(' + tracts[0]['properties']['PARTY'] + ')'+ 
-              '</h2></strong>'
+              '</h2></strong>' +
               '<h2><strong>Score: ' + tracts[0]['properties']['VOTE_SCORE']  +'</h2></strong>';
           }
         });
