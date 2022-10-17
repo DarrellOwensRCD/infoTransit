@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>Improved Urban Areas Map</title>
+  <title>Politician Ranking Map</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
@@ -177,7 +177,9 @@
           if (tracts.length > 0) {
             document.getElementById('pd').innerHTML =
               '<h2><strong>' + [selectedLayer] + " District " +
-              tracts[0]['properties']['ID'];
+              tracts[0]['properties']['NAME'] + '(' + tracts[0]['properties']['PARTY'] + ')'+ 
+              '</h2></strong>'
+              '<h2><strong>Score: ' + tracts[0]['properties']['VOTE_SCORE']  +'</h2></strong>';
           }
         });
       });
@@ -202,4 +204,3 @@
 
 </body>
 </html>
-
