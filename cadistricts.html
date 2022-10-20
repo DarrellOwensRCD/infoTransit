@@ -177,9 +177,9 @@
           if (tracts.length > 0) {
             document.getElementById('pd').innerHTML =
               '<h3><strong>' + [selectedLayer] + '</h3></strong>'+ '<h2><strong>' +
-              tracts[0]['properties']['NAME'] + '(' + tracts[0]['properties']['PARTY'] + ')'+ 
+              tracts[0]['properties']['NAME'] + ' (' + tracts[0]['properties']['PARTY'] + ')'+ 
               '</h2></strong>' +
-              '<h2><strong>Score: ' + tracts[0]['properties']['VOTE_SCORE']  +'</h2></strong>';
+              '<h2><strong>Score: ' + tracts[0]['properties']['TOTAL']  +'</h2></strong>';
           }
         });
       });
