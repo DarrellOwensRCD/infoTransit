@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Alameda County 2022 General Election Results Map</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <script
+  type="text/javascript"
+  src="/js/lib/dummy.js"
+
+  ></script>
+
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+  <script type="text/javascript" src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css">
+
+  <style id="compiled-css" type="text/css">
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    h2,
+    h3 {
+      margin: 10px;
+      font-size: 1.2em;
+    }
+    h3 {
+      font-size: 1em;
+    }
+    p {
+      font-size: 0.85em;
+      margin: 10px;
+      text-align: left;
+    }
+    .map-overlay {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.8);
+      margin-right: 20px;
+      font-family: Arial, sans-serif;
+      overflow: auto;
+      border-radius: 3px;
+    }
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+    #features {
+      top: 0;
+      height: 200px;
+      margin-top: 20px;
+      width: 300px;
+    }
+
+    .legend-key {
+      display: inline-block;
+      border-radius: 20%;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+    }
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+  <div id="map"></div>
+  <div class="map-overlay" id="features">
+    <div id="pd">
+      <h2>2022 Alameda County November Election Results by Precinct (RCV 1st Round)</h2>
+    </div>
+    <select id='layerpicker' style="width: 200px;">
+      <option>select</option>
+      <option value="1">Turnout</option>
+      <option value="2">Governor</option>
+      <option value="3">Lieutenant Governor</option>
+      <option value="4">Secretary of State</option>
+      <option value="5">Controller</option>
+      <option value="6">Treasurer</option>
+      <option value="7">Attorney General</option>
+      <option value="8">Insurance Commissioner</option>
+      <option value="9">Board of Equalization, 2nd District</option>
+      <option value="10">U.S. Senator, Full Term</option>
+      <option value="11">U.S. Senator, Partial/Unexpired Term</option>
+      <option value="12">U.S. Representative, 10th Congressional District</option>
+      <option value="13">U.S. Representative, 12th Congressional District</option>
+      <option value="14">U.S. Representative, 14th Congressional District</option>
+      <option value="15">U.S. Representative, 17th Congressional District</option>
+      <option value="16">State Senator, 10th District</option>
+      <option value="17">State Assembly, 14th District</option>
+      <option value="18">State Assembly, 16th District</option>
+      <option value="19">State Assembly, 18th District</option>
+      <option value="20">State Assembly, 20th District</option>
+      <option value="21">State Assembly, 24th District</option>
+      <option value="22">Chief Justice of California - Patricia Guerrero</option>
+      <option value="23">Associate Justice of the Supreme Court - Goodwin Liu</option>
+      <option value="24">Associate Justice of the Supreme Court - Martin J. Jenkins</option>
+      <option value="25">Associate Justice of the Supreme Court - Joshua P. Groban</option>
+      <option value="26">Associate Justice, Court of Appeal, 1st Dist., Div. 2 - Therese M. Stewart</option>
+      <option value="27">Presiding Justice, Court of Appeal, 1st Dist., Div. 3 - Alison M. Tucher</option>
+      <option value="28">Associate Justice, Court of Appeal, 1st Dist., Div. 3 - Victor A. Rodriguez</option>
+      <option value="29">Associate Justice, Court of Appeal, 1st Dist., Div. 3 - Ioana Petrou</option>
+      <option value="30">Associate Justice, Court of Appeal, 1st Dist., Div. 3 - Carin T. Fujisaki</option>
+      <option value="31">Associate Justice, Court of Appeal, 1st Dist., Div. 4 - Tracie L. Brown</option>
+      <option value="32">Associate Justice, Court of Appeal, 1st Dist., Div. 4 - Jeremy M. Goldman</option>
+      <option value="33">Presiding Justice, Court of Appeal, 1st Dist., Div. 5 - Teri L. Jackson</option>
+      <option value="34">Associate Justice, Court of Appeal, 1st Dist., Div. 5 - Gordon B. Burns</option>
+      <option value="35">State Superintendent of Public Instruction</option>
+      <option value="36">Peralta CCD Trustee, Area 3</option>
+      <option value="37">Peralta CCD Trustee, Area 5</option>
+      <option value="38">Peralta CCD Trustee, Area 7</option>
+      <option value="39">Alameda USD Governing Board Members</option>
+      <option value="40">Castro Valley USD Governing Board Members</option>
+      <option value="41">Dublin USD Governing Board Member, Area 3, Short Term</option>
+      <option value="42">Dublin USD Governing Board Member, Area 5</option>
+      <option value="43">Emery USD Governing Board Members</option>
+      <option value="44">Fremont USD Governing Board Member, Area 3</option>
+      <option value="45">Hayward USD Governing Board Members, Full Term</option>
+      <option value="46">Hayward USD Governing Board Member, Short Term</option>
+      <option value="47">Lammersville Joint USD Governing Board Members, Full Term</option>
+      <option value="48">Lammersville Joint USD Governing Board Member, Short Term</option>
+      <option value="49">Livermore Valley Joint USD Governing Board Members</option>
+      <option value="50">Livermore Valley Joint USD Governing Board Members</option>
+      <option value="51">New Haven USD Governing Board Member, Area 4</option>
+      <option value="52">Newark USD Governing Board Members</option>
+      <option value="53">Pleasanton USD Governing Board Member, Area 2</option>
+      <option value="55">Sunol Glen USD Governing Board Members, Full Term</option>
+      <option value="56">Sunol Glen USD Governing Board Member, Short Term</option>
+      <option value="57">Supervisor, 3rd District</option>
+      <option value="58">District Attorney</option>
+      <option value="59">Mayor - Alameda</option>
+      <option value="60">Members, City Council - Alameda</option>
+      <option value="61">Rent Stabilization Board Commissioners - Berkeley</option>
+      <option value="62">School Directors - Berkeley</option>
+      <option value="63">Mayor - Dublin</option>
+      <option value="64">Members, City Council - Dublin</option>
+      <option value="65">Members, City Council - Emeryville</option>
+      <option value="66">Member, City Council, Dist. 2 - Fremont</option>
+      <option value="67">Member, City Council, Dist. 3 - Fremont</option>
+      <option value="68">Member, City Council, Dist. 4 - Fremont</option>
+      <option value="69">Mayor - Hayward</option>
+      <option value="70">Members, City Council - Hayward</option>
+      <option value="71">Mayor - Livermore</option>
+      <option value="72">Member, City Council, Dist. 1 - Livermore</option>
+      <option value="73">Member, City Council, Dist. 2 - Livermore</option>
+      <option value="74">Mayor - Newark</option>
+      <option value="75">Members, City Council - Newark</option>
+      <option value="76">Members, City Council - Piedmont</option>
+      <option value="77">Members, Board of Education - Piedmont</option>
+      <option value="78">Mayor - Pleasanton</option>
+      <option value="79">Member, City Council, Dist. 1 - Pleasanton</option>
+      <option value="80">Member, City Council, Dist. 3 - Pleasanton</option>
+      <option value="81">Member, City Council, Dist. 2 - Union City</option>
+      <option value="82">Member, City Council, Dist. 3 - Union City</option>
+      <option value="83">Member, City Council, Dist. 4 - Union City</option>
+      <option value="84">AC Transit District Director, At-Large</option>
+      <option value="85">AC Transit District Director, Ward 3</option>
+      <option value="86">AC Transit District Director, Ward 4</option>
+      <option value="87">BART Director, District 6</option>
+      <option value="88">Dublin-San Ramon Services District Director, Area 5, Short Term</option>
+      <option value="89">EBMUD Director, Ward 3</option>
+      <option value="90">EBMUD Director, Ward 7</option>
+      <option value="91">East Bay Regional Park District Director, Ward 3</option>
+      <option value="92">Eden Township Healthcare District Director, Zone 3</option>
+      <option value="93">Eden Township Healthcare District Director, Zone 5</option>
+      <option value="94">Fairview Fire Protection District Directors</option>
+      <option value="95">Livermore Area Recreation & Park District Directors</option>
+      <option value="96">Members, Board of Directors, Oro Loma Sanitary District</option>
+      <option value="97">Members, City Council - Albany (RCV)</option>
+      <option value="98">Members, Board of Education - Albany (RCV)</option>
+      <option value="99">Member, City Council, Dist. 1 - Berkeley (RCV)</option>
+      <option value="100">Member, City Council, Dist. 4 - Berkeley (RCV)</option>
+      <option value="101">Member, City Council, Dist. 7 - Berkeley (RCV)</option>
+      <option value="102">Member, City Council, Dist. 8 - Berkeley (RCV)</option>
+      <option value="103">City Auditor - Berkeley (RCV)</option>
+      <option value="104">Mayor - Oakland (RCV)</option>
+      <option value="106">Member, City Council, Dist. 2 - Oakland (RCV)</option>
+      <option value="107">Member, City Council, Dist. 4 - Oakland (RCV)</option>
+      <option value="108">Member, City Council, Dist. 6 - Oakland (RCV)</option>
+      <option value="109">City Auditor - Oakland (RCV)</option>
+      <option value="110">School Director, Dist. 2 - Oakland (RCV)</option>
+      <option value="111">School Director, Dist. 4 - Oakland (RCV)</option>
+      <option value="112">School Director, Dist. 6 - Oakland (RCV)</option>
+      <option value="113">Mayor - San Leandro (RCV)</option>
+      <option value="114">Member, City Council, Dist. 1 - San Leandro (RCV)</option>
+      <option value="115">Member, City Council, Dist. 3 - San Leandro (RCV)</option>
+      <option value="116">Member, City Council, Dist. 5 - San Leandro (RCV)</option>
+      <option value="117">State Proposition 1</option>
+      <option value="118">State Proposition 26</option>
+      <option value="119">State Proposition 27</option>
+      <option value="120">State Proposition 28</option>
+      <option value="121">State Proposition 29</option>
+      <option value="122">State Proposition 30</option>
+      <option value="123">State Proposition 31</option>
+      <option value="124">Measure D - Alameda County</option>
+      <option value="125">Bond Measure G - Livermore Valley Joint USD</option>
+      <option value="126">Measure H - Oakland USD</option>
+      <option value="127">Bond Measure I - Pleasanton USD</option>
+      <option value="128">Bond Measure J - Sunol Glen USD</option>
+      <option value="129">Measure E - City of Alameda</option>
+      <option value="130">Measure F - City of Alameda</option>
+      <option value="131">Measure K - City of Albany</option>
+      <option value="132">Bond Measure L - City of Berkeley</option>
+      <option value="133">Measure M - City of Berkeley</option>
+      <option value="134">Measure N - City of Berkeley</option>
+      <option value="135">Measure O - City of Emeryville</option>
+      <option value="136">Measure P - City of Livermore</option>
+      <option value="137">Measure Q - City of Oakland</option>
+      <option value="138">Measure R - City of Oakland</option>
+      <option value="139">Measure S - City of Oakland</option>
+      <option value="140">Measure T - City of Oakland</option>
+      <option value="141">Bond Measure U - City of Oakland</option>
+      <option value="142">Measure V - City of Oakland</option>
+      <option value="143">Measure W - City of Oakland</option>
+      <option value="144">Measure X - City of Oakland</option>
+      <option value="145">Measure Y - City of Oakland</option>
+      <option value="146">Measure Z - City of Union City</option>
+    </select>
+  </div>
+  <div class="map-overlay" id="legend"></div>
+
+    <script type="text/javascript">//<![CDATA[
+
+
+      //search bar
+      // define access token
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
+
+    let selectedLayer = 'select'
+
+      //create map
+    var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/idothethinking/clbhl0mqz000414npb5hy3p7v', // map style URL from Mapbox Studio
+        zoom: 10,
+        center: [-122.258, 37.802]
+      });
+
+    var nav = new mapboxgl.NavigationControl();
+    map.addControl(nav, 'top-left');
+    var colors = [
+      '#035101',
+      '#07d600',
+      '#a1ff9e',
+      '#ffffff',
+      '#fe7171',
+      '#fe2c10',
+      '#930101'
+
+      ];
+      // map layers -- we iterate through these to turn them all off
+    let mapLayers = ['1','2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99', '100', '101', '102', '103', '104', '105', '106', '107', '108', '109', '110', '111', '112', '113', '114', '115', '116', '117', '118', '119', '120', '121', '122', '123', '124', '125', '126', '127', '128', '129', '130', '131', '132', '133', '134', '135', '136', '137', '138', '139', '140', '141', '142', '143', '144', '145', '146']
+      // layer listener
+    const selectElement = document.querySelector('#layerpicker');
+
+    selectElement.addEventListener('change', (event) => {
+      //console.log(event.target.value)
+      selectedLayer = event.target.value
+      mapLayers.forEach(l => map.setLayoutProperty(l, "visibility", "none"))
+      map.setLayoutProperty(event.target.value, "visibility", "visible")
+    });
+
+        // define layer names
+    var colors_t = [
+      '#7e0101',
+      '#de0202',
+      '#fdf11c',
+      '#01f40d',
+      '#017e08'
+      ];
+    var names_t = [
+      "0% Turnout",
+      "25% Turnout",
+      "50% Turnout",
+      "75% Turnout",
+      "100% Turnout"
+      ];
+    var colors = [
+      '#02ca02',
+      '#8a2be2',
+      '#ff4500',
+      '#d10000',
+      '#ffff00',
+      '#2217fd',
+      '#ff00ff',
+      '#9acd32',
+      '#20b2aa',
+      '#6b0000',
+      '#ff1493'
+      ];
+      // wait for map to load before adjusting it
+    map.on('load', function() {
+        // make a pointer cursor
+      map.getCanvas().style.cursor = 'default';
+
+        // set map bounds to the continental US
+
+        // make a pointer cursor
+      map.getCanvas().style.cursor = 'default';
+      const highlightLayer = 'highlight-layer';
+      map.addLayer({
+        id: highlightLayer,
+        type: 'line',
+        source: "composite",
+        "source-layer": "sheet_2",
+        paint: {
+          'line-color': '#000000',
+          'line-width': 5,
+          'line-opacity' : 1
+        },
+        filter: ['==','Precinct_ID',''],
+      });
+        //load map 
+        // change info window on hover
+      var iH;
+      var old = 0;
+      var name ;
+      var number;
+      map.on('mousemove', function(e) {
+        var tracts = map.queryRenderedFeatures(e.point, {
+          layers: [selectedLayer]
+        });
+        //Render highlighter
+        console.log(tracts[0].properties.Precinct_ID);
+        map.setFilter(highlightLayer, ['==', 'Precinct_ID', tracts[0].properties.Precinct_ID]);
+        var can_len = tracts[0]['properties']['Candidate_Count'];
+        //Start the Process
+        if (tracts.length > 0) {
+          if( selectedLayer == 1){
+            for (i = 0; i < old; i++) {
+              features.removeChild(features.lastElementChild);
+            }      
+            old = 5; 
+            for(i = 0; i < 5; i++){
+              var layer = names_t[i];
+              var color = colors_t[i];
+              var item = document.createElement('div');
+              var key = document.createElement('span');
+              key.className = 'legend-key';
+              key.style.backgroundColor = color;
+
+              var value = document.createElement('span');
+              value.innerHTML = layer;
+              item.appendChild(key);
+              item.appendChild(value);
+              features.appendChild(item);             
+            }   
+            document.getElementById('pd').innerHTML = '<strong><h3> Precinct: ' +tracts[0]['properties']['Precinct_ID'] + '</h3><h3>Turnout: ' +  tracts[0]['properties']['Turnout'] + '%</strong></h3>';
+          } 
+          else{
+            document.getElementById('pd').innerHTML = '<strong><h3>Precinct: ' +tracts[0]['properties']['Precinct_ID'] + '</strong></h3><p>Asterisk Indicates RCV Round 1 Vote Winner</p>';
+            iH = '';
+            for (i = 0; i < old; i++) {
+              features.removeChild(features.lastElementChild);
+            }
+            old = 0;
+          //First Do the Winner and Bold it
+            name = tracts[0]['properties']['Winner'];
+            number = parseInt(tracts[0]['properties']['Winner_no']);
+            iH =  name + ': ' + tracts[0]['properties'][name].toString() +' ('+ tracts[0]['properties'][name + '_per'].toString() +'%) *';
+          //Ad color
+            var layer = iH;
+            var color = colors[number];
+            var item = document.createElement('div');
+            var key = document.createElement('span');
+            key.className = 'legend-key';
+            key.style.backgroundColor = color;
+
+            var value = document.createElement('span');
+            value.innerHTML = layer;
+            item.appendChild(key);
+            item.appendChild(value);
+            features.appendChild(item);
+            old += 1;
+          //START 
+            for (i = 0; i < can_len; i++){
+              if(tracts[0]['properties']['Candidate_' + i.toString()] != tracts[0]['properties']['Winner'] ){
+                if(tracts[0]['properties']['Candidate_' + i.toString()] != 'DNE'){
+                  name = tracts[0]['properties']['Candidate_' + i.toString()];
+                  if(tracts[0]['properties']['Candidate_' + i.toString()] == tracts[0]['properties']['Winner'] ){
+                    iH = tracts[0]['properties']['Candidate_' + i.toString()] + ': ' + tracts[0]['properties'][name].toString() +' ('+ tracts[0]['properties'][name + '_per'].toString() +'%)';
+                  }
+                  else{
+                    iH = tracts[0]['properties']['Candidate_' + i.toString()] + ': ' + tracts[0]['properties'][name].toString() +' ('+ tracts[0]['properties'][name + '_per'].toString() +'%)';
+                  }
+                  var layer = iH;
+                  var color = colors[i];
+                  var item = document.createElement('div');
+                  var key = document.createElement('span');
+                  key.className = 'legend-key';
+                  key.style.backgroundColor = color;
+
+                  var value = document.createElement('span');
+                  value.innerHTML = layer;
+                  item.appendChild(key);
+                  item.appendChild(value);
+                  features.appendChild(item);
+                  old += 1;
+                }
+                else{
+                  can_len += 1;
+                }
+              }
+            }
+          }
+            //document.getElementById('pd').innerHTML = iH;
+        }
+      });
+});
+
+
+
+  //]]></script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "1cxdy0qr"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+</body>
+</html>
