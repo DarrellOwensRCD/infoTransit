@@ -91,6 +91,7 @@
 
 </head>
 <body>
+<script src="config.js"></script>
   <!-- Load the `mapbox-gl-geocoder` plugin. -->
 <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
 <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
@@ -98,10 +99,11 @@
 <div class="map-overlay" id="features">
   <div id="pd">
     <h2>Census 2020 Rate of Change</h2>
-    <p>Select a neighborhood to see population, demographics and housing growth or decline from 2010 to 2020.</p>
+    <p>Select a neighborhood to see population, demographics, housing units and household growth or decline from 2010 to 2020.</p>
   </div>
   <select id='layerpicker'>
-    <option value="PopulationGrowth">Total Population (2020)</option>
+    <option disabled = "disabled" style="color:gray" >2020 People Data</option>
+    <option value="PopulationGrowth">Total Population</option>
     <option value="LatinoPopulationGrowth">Latino</option>
     <option value="WhitePopulationGrowth">White</option>
     <option value="BlackPopulationGrowth">Black</option>
@@ -112,6 +114,25 @@
     <option value="PacificPopulationGrowth">Pacific Islander</option>
     <option value="HousingGrowth">Housing Units</option>
     <option value="VacantHomesGrowth">Vacant Units</option>
+    <option disabled = "disabled" >2020 Household Data</option>
+    <option value="AllH">Total Homeowner Households</option>
+    <option value="AllR">Total Rental Households</option>
+    <option value="LH">Latino Homeowners</option>
+    <option value="LR">Latino Renters</option>
+    <option value="WH">White Homeowners</option>
+    <option value="WR">White Renters</option>
+    <option value="BH">Black Homeowners</option>
+    <option value="BR">Black Renters</option>
+    <option value="AH">Asian Homeowners</option>
+    <option value="AR">Asian Renters</option>
+    <option value="NH">Native Am. Homeowners</option>
+    <option value="NR">Native Am. Renters</option>
+    <option value="PH">Pacific Isl. Homeowners</option>
+    <option value="PR">Pacific Isl. Renters</option>
+    <option value="OH">Other Race Homeowners</option>
+    <option value="OR">Other Race Renters</option>
+    <option value="MH">Multi-Race Homeowners</option>
+    <option value="MR">Multi-Race Renters</option>   
   </select>
 </div>
 <div class="map-overlay" id="legend"></div>
@@ -120,8 +141,7 @@
 
 
       // define access token
-      mapboxgl.accessToken = 'pk.eyJ1IjoiaWRvdGhldGhpbmtpbmciLCJhIjoiY2s4dXR1eDY0MDVvMzNmcTVqbXc1Z2kzaCJ9.VETkhTCLHbBrKn_3RvVEnA';
-
+      mapboxgl.accessToken = apiKey; 
       let selectedLayer = 'PopulationGrowth'
 
 
@@ -130,7 +150,7 @@
         container: 'map', // container id
         style: 'mapbox://styles/idothethinking/ckshtdrsj7si217mw9ua1e42v', // map style URL from Mapbox Studio
 	center:[-122.264,37.812], //center over Oakland
-        zoom: 8.86
+        zoom: 11.0
       });
       //Geocoder
       map.addControl(
@@ -143,7 +163,8 @@
     	var nav = new mapboxgl.NavigationControl();
     	map.addControl(nav, 'top-left'); 
       // map layers -- we iterate through these to turn them all off
-      let mapLayers = ['WhitePopulationGrowth', 'LatinoPopulationGrowth', 'BlackPopulationGrowth', 'AsianPopulationGrowth', 'OtherPopulationGrowth', 'MultiracePopulationGrowth',"NativePopulationGrowth","PacificPopulationGrowth", 'HousingGrowth', 'VacantHomesGrowth',"PopulationGrowth",]
+      let mapLayers = ['WhitePopulationGrowth', 'LatinoPopulationGrowth', 'BlackPopulationGrowth', 'AsianPopulationGrowth', 'OtherPopulationGrowth', 'MultiracePopulationGrowth',"NativePopulationGrowth","PacificPopulationGrowth", 'HousingGrowth', 'VacantHomesGrowth',"PopulationGrowth", "AllH", "AllR", "LH","LR",
+        "WH", "WR", "BH", "BR", "AH", "AR", "NH", "NR", "PH", "PR", "OH", "OR", "MH", "MR"]
       // layer listener
       const selectElement = document.querySelector('#layerpicker');
 
@@ -222,7 +243,9 @@
         "MultiracePopulationGrowth" : "Multi-Race",
         "HousingGrowth" : "Homes",
         "VacantHomesGrowth": "Vacant",
-        "PopulationGrowth" : "Population"
+        "PopulationGrowth" : "Population",
+        "AllH" : "Homeowners", "AllR": "Renters", "LH": "LatinoHomeowners","LR":"LatinoRenters",
+        "WH":"WhiteHomeowners", "WR": "WhiteRenters", "BH":"BlackHomeowners", "BR":"BlackRenters", "AH":"AsianHomeowners", "AR":"AsianRenters", "NH":"Native AmericanHomeowners", "NR":"Native AmericanRenters", "PH":"Pacific IslanderHomeowners", "PR":"Pacific IslanderRenters", "OH":"OtherHomeowners", "OR":"OtherRenters", "MR" : "Multi-RaceRenters", "MH" : "Multi-RaceHomeowners"
         }
        	let lookupracenet = {"WhitePopulationGrowth" : "WhiteNet",
         "BlackPopulationGrowth" : "BlackNet",
@@ -235,6 +258,8 @@
         "HousingGrowth" : "HomesNet",
         "VacantHomesGrowth": "VacantNet",
         "PopulationGrowth" : "PopulationNet",
+        "AllH" : "Net Homeowners", "AllR": "Net Renters", "LH": "Net Latino Homeowners","LR":"Net Latino Renters",
+        "WH":"Net White Homeowners", "WR": "Net White Renters", "BH":"Net Black Homeowners", "BR":"Net Black Renters", "AH":"Net Asian Homeowners", "AR":"Net Asian Renters", "NH":"Net Native American Homeowners", "NR":"Net Native American Renters", "PH":"Net Pacific Islander Homeowners", "PR":"Net Pacific Islander Renters", "OH":"Net Other Homeowners", "OR":"Net Other Renters", "MR" : "Net Multi-Race Renters", "MH" : "Net Multi-Race Homeowners"
         }
         let lookupracenetper = {"WhitePopulationGrowth" : "WhiteNetPer",
         "BlackPopulationGrowth" : "BlackNetPer",
@@ -247,6 +272,8 @@
         "HousingGrowth" : "HomesNetPer",
         "VacantHomesGrowth": "VacantNetPer",
         "PopulationGrowth": "PopulationNetPer",
+        "AllH" : "Net Homeowners Per", "AllR": "Net Renters Per", "LH": "Net Latino Homeowners Per","LR":"Net Latino Renters Per",
+        "WH":"Net White Homeowners Per", "WR": "Net White Renters Per", "BH":"Net Black Homeowners Per", "BR":"Net Black Renters Per", "AH":"Net Asian Homeowners Per", "AR":"Net Asian Renters Per", "NH":"Net Native American Homeowners Per", "NR":"Net Native American Renters Per", "PH":"Net Pacific Islander Homeowners Per", "PR":"Net Pacific Islander Renters Per", "OH":"Net Other Homeowners Per", "OR":"Net Other Renters Per", "MR" : "Net Multi-Race Renters Per", "MH" : "Net Multi-Race Homeowners Per"
         }
         let lookname = {"WhitePopulationGrowth" : "White pop. (2020): ",
         "BlackPopulationGrowth" : "Black pop. (2020): ",
@@ -259,6 +286,8 @@
         "HousingGrowth" : "Total Housing Units (2020): ",
         "VacantHomesGrowth": "Vacant Housing Units (2020): ",
         "PopulationGrowth" : "Total Population (2020): ",
+        "AllH" : "Owner Households (2020): ", "AllR": "Renter Households (2020): ", "LH": "Latino Homeowners (2020): ","LR" : "Latino Leaseholders (2020): ",
+        "WH" : "White Homeowners (2020): ", "WR" : "White Leaseholders (2020): ", "BH" : "Black Homeowners (2020): ", "BR" : "Black Leaseholders (2020): ", "AH" : "Asian Homeowners (2020): ", "AR" : "Asian Leaseholders (2020): ", "NH" : "Native American Homeowners (2020): ", "NR" : "Native American Leaseholders (2020): " , "PH" : "Pacific Islander Homeowners (2020): " , "PR": "Pacific Islander Leaseholders (2020): ", "OH" : "Other Homeowners (2020): ", "OR": "Other Leaseholders (2020): ", "MH" : "Multi-Race Homeowners (2020): " , "MR": "Multi-Race Leaseholders (2020): "
         }
          let lookname10 = {"WhitePopulationGrowth" : "White pop. (2010): ",
         "BlackPopulationGrowth" : "Black pop. (2010): ",
