@@ -139,9 +139,8 @@
 
     <script type="text/javascript">//<![CDATA[
 
-
       // define access token
-      mapboxgl.accessToken = apiKey; 
+      mapboxgl.accessToken = process.env.API_KEY_MB; 
       let selectedLayer = 'PopulationGrowth'
 
 
